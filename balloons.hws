@@ -1,0 +1,302 @@
+@APPTITLE "Balloons"
+@APPAUTHOR "Enrique Mecklenburg"
+@APPVERSION "$VER: Balloons 1.1 (08-Oct-19)"
+@APPDESCRIPTION "Scratch example written in Hollywood"
+
+
+/*********************************
+*  Objective of the game is to   *
+*  click on the balloons to pop  *
+*  them before time ends.        *
+*********************************/
+
+@DISPLAY 1, {Width = 640, Height = 480}
+
+@BGPIC 2, "background.png"
+
+;balloon sprites, each with 2 frames, one with the
+;balloon image and one with the popped image
+@BRUSH 1, "balloon_blue.png", {LoadAlpha = True}
+@BRUSH 2, "balloon_black.png", {LoadAlpha = True}
+@BRUSH 3, "balloon_green.png", {LoadAlpha = True}
+@BRUSH 4, "balloon_red.png", {LoadAlpha = True}
+
+@SAMPLE 1, "pop.8svx"
+
+EscapeQuit(True)
+
+SetFillStyle(#FILLCOLOR)
+
+balloons = 15          ;total ballons on screen
+time = 10              ;total time in seconds
+countdown = {}         ;table for storing time numbers
+score = 0              ;starting score
+scores = {}            ;table for storing score numbers
+done = False           ;is game over?
+
+
+/******************
+ * Balloon object *
+ ******************/
+balloon = {}           ;prototype table for balloon objects
+
+;constructor for new balloon object
+Function balloon:new()    
+    ;create sprite from random brush, width and height, load 2 frames and it has 2 frames per row
+    o = {sprite = CreateSprite(Nil, #BRUSH, Rnd(4) + 1, 54, 70, 2, 2),
+         x = 5 + Rnd(575),                          ;set balloon's initial horizontal coord
+		 y = 30 + Rnd(345),                         ;set balloon's initial vertical coord
+		 sx = -3 + Rnd(7),                          ;set balloon's horizontal speed
+		 sy = -3 + Rnd(7),                          ;set balloon's horizontal speed
+         notPopped = True}                          ;created balloon is not popped yet
+    SetMetaTable(o, {__index = balloon})            ;set balloon as the "prototype" for new balloon objects
+    Return(o)
+EndFunction
+
+;move balloon object
+Function balloon:move()
+    If self.notPopped
+        ;set new position
+        self.x = self.x + self.sx
+        self.y = self.y + self.sy
+
+        ;check horizontal and vertical limits
+        If self.x > 586 Or self.x < 0 Then self.sx = -self.sx
+	    If self.y > 410 Or self.y < 25 Then self.sy = -self.sy
+
+        ;display sprite's frame 1 in new position
+        DisplaySprite(self.sprite, self.x, self.y, 1)
+    EndIf
+EndFunction
+
+;pop balloon object when hit
+Function balloon:pop()
+    self.notPopped = False                          ;balloon now popped
+    DisplaySprite(self.sprite, self.x, self.y, 2)   ;display popped frame
+    PlaySample(1)                                   ;play pop sound
+    Wait(1)
+    RemoveSprite(self.sprite)                       ;remove balloon sprite
+EndFunction
+
+/*** End balloon object ***/
+
+
+
+
+/*******************
+ * Create balloons *
+ *******************/
+Function p_CreateBalloons()
+    For Local i = 1 To balloons
+        balloon[i] = balloon:new()                  ;create new balloon object
+    Next
+EndFunction
+
+
+/********************************************
+ * Create scores and display starting score *
+ ********************************************/
+Function p_CreateScore()
+    scoreText = CreateTextObject(Nil, "Score: ")                        ;create "Score" text
+
+    For Local i = 0 To balloons
+	    CreateTextObject(1, PadNum(i, 2))                               ;create numbers for score as text objects
+	    scores[i] = CreateSprite(Nil, #TEXTOBJECT, 1)                   ;convert numbers to sprites
+        FreeTextObject(1)		                                        ;free memory of no longer deeded text objects
+    Next
+
+    DisplayTextObject(scoreText, 10, 4)                                 ;display "Score" text
+    DisplaySprite(scores[score], 70, 4)                                 ;display starting score
+EndFunction
+
+
+/**********************
+ * Create time sprite *
+ **********************/
+Function p_CreateCountdown()
+    timeText = CreateTextObject(Nil, "Time: ")                          ;create "Time" text
+
+    For Local i = 0 To time
+        CreateTextObject(1, PadNum(time - i, 2))                        ;create timer numbers as text objects starting at 10
+        countdown[i] = CreateSprite(Nil, #TEXTOBJECT, 1)                ;convert numbers to sprites
+        FreeTextObject(1)
+    Next
+
+    For Local i = 0 To time
+        CreateTextObject(i, PadNum(time - i, 2))                        ;create timer numbers as text objects starting at 10
+    Next
+
+    DisplayTextObject(timeText, 550, 4)                                 ;display "Time" text
+    DisplaySprite(countdown[0], 600, 4)                                 ;display starting time
+EndFunction
+
+
+/*****************
+ * Move balloons *
+ *****************/
+Function p_MoveBalloons()
+    BeginRefresh()
+    For Local i = 1 To balloons
+        balloon[i]:move()                                               ;move balloon object
+    Next
+    EndRefresh()
+EndFunction
+
+
+/***************************
+ * Check if balloon is hit *
+ ***************************/
+Function p_Burst()
+    Local mx, my = MouseX(), MouseY()		                            ;store mouse position when clicked
+
+    For Local i = balloons To 1 Step -1                                 ;negative step so click works on balloon "on top" in case of overlapping with other
+        If balloon[i].notPopped
+            Local bx, by = balloon[i].x, balloon[i].y                   ;copy balloon position
+
+            ;check if balloon sprite was hit
+	        If mx > bx And mx < bx + 54 And my > by And my < by + 70
+	            balloon[i]:pop()                                        ;remove popped balloon
+                RemoveSprite(scores[score])
+                score = score + 1
+	            DisplaySprite(scores[score], 70, 5)                     ;update score: shows next frame of scores sprite
+	            If score = balloons
+		            p_GameOver()
+	            EndIf
+	            Break
+            EndIf
+        EndIf
+    Next
+EndFunction
+
+
+/************************
+ * Check time countdown *
+ ************************/
+Function p_Countdown()
+    ;remember that time sprites run from 10 to 0
+    Local t = Int(GetTimer(1) / 1000)       ;get next second
+
+    ;when resuming after a pause, the display is redrawn and the time sprite is not in sync with the timer
+    ;this checks for the sprite displayed when pausing and removes it before the next is displayed
+    If t > 0
+        If GetAttribute(#SPRITE, countdown[t-1], #ATTRONSCREEN) Then RemoveSprite(countdown[t-1])
+    EndIf
+    
+    If t => time
+	    DisplaySprite(countdown[t], 600, 4) ;display last time sprite (countdown[10]) which is 0
+	    p_GameOver("lose")
+    Else
+        DisplaySprite(countdown[t], 600, 4) ;display next time sprite
+    EndIf
+EndFunction
+
+
+/*************
+ * Game over *
+ *************/
+Function p_GameOver(endText$)
+    StopTimer(1)
+    ClearInterval(2)
+    ClearInterval(1)
+
+    done = True             ;game is over
+
+    RemoveSprites(True)     ;remove sprites but keep graphics displayed so box can be draw on top
+
+    Box(0, 0, 640, 480, Color = #GRAY, {Transparency = "50%"})
+
+    SetFont(#SANS, 36, {Engine = #FONTENGINE_INBUILT})
+    SetFontStyle(#BOLD)
+    SetFontStyle(#ANTIALIAS)
+
+    If endText$ = "lose"
+	    TextOut(#CENTER, #CENTER, "Game Over")
+    Else
+	    TextOut(#CENTER, #CENTER, "You won!")
+    EndIf
+
+    Wait(100)
+    TextOut(#CENTER, 260, "Play again? Y/N")
+EndFunction
+
+
+/************
+ * Clean up *
+ ************/
+Function p_CleanUp()
+    For Local i = 0 To balloons
+	    FreeSprite(scores[i])             ;free sprites created for score
+    Next
+
+    For Local i = 0 To time
+	    FreeSprite(countdown[i])           ;free sprites created for timer
+    Next
+
+    For Local i = 1 To balloons
+	    FreeSprite(balloon[i].sprite)     ;free sprites created for balloons
+    Next
+
+    FreeTextObject(scoreText)             ;free text objects
+    FreeTextObject(timeText)
+
+    score = 0
+EndFunction
+
+
+/*****************
+ * Main function *
+ *****************/
+Function p_Start()
+    done = False          ; game is not over
+
+    SetFont(#SANS, 18, {Engine = #FONTENGINE_INBUILT})
+    SetFontStyle(#BOLD)
+    SetFontStyle(#ANTIALIAS)
+
+    DisplayTransitionFX(2, {Type = #FADE, Speed = 50, Parameter = #WHITE})	;display background with a transition fx
+
+    Box(0, 0, 640, 25, #GRAY, {Transparency = "50%"})          ;score and time area
+
+    p_CreateScore()                                            ;set starting score
+    p_CreateCountdown()                                        ;set remaining time
+    Wait(25)
+    p_CreateBalloons()                                         ;create and show balloons
+
+    StartTimer(1)                                              ;start timer
+
+    SetInterval(1, p_Countdown, 1000)                          ;execute timecountdown loop, 1 second interval
+    SetInterval(2, p_MoveBalloons, 1000/25)                    ;execute main loop at 25fps
+EndFunction
+
+
+/***********************************
+ * Check mouse and keyboard events *
+ ***********************************/
+Function p_EventFunction(msg)
+    Switch(msg.action)
+    Case "OnMouseDown":
+	    If done = False
+	        p_Burst()                                          ;check if balloon is hit
+	    EndIf
+    Case "OnKeyDown":
+	    If msg.key = " " And HaveObject(#TIMER, 1)	           ;check if SPACE pressed and timer 1 is running
+	        PauseTimer(1)				                       ;pause timer
+	        WaitKeyDown("Space")                               ;pause the script until SPACE is pressed again
+	        ResumeTimer(1)
+	    ElseIf (msg.key = "Y" Or msg.key = "y") And done       ;restart if game over
+	        p_CleanUp()
+	        p_Start()
+	    ElseIf (msg.key = "N" Or msg.key = "n") And done       ;quit if game over
+	        End()
+	    EndIf
+    EndSwitch
+EndFunction
+
+
+InstallEventHandler({OnMouseDown = p_EventFunction, OnKeyDown = p_EventFunction})
+
+p_Start()    ;start game
+
+Repeat
+    WaitEvent()
+Forever

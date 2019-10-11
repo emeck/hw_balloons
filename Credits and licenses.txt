@@ -1,0 +1,28 @@
+Balloon sprites
+===============
+The sprite files balloon_black.png, balloon_blue.png,
+balloon_green.png and balloon_red.png modified by
+Enrique Mecklenburg Serkovic.
+
+Original sprites by Kerri Coombs, Living Midnight Design.
+Licensed under CC-BY-SA 3.0
+Downloaded from opengameart.org/content/sprites-from-porcupop
+
+Background image
+================
+© 2012-2013 Julien Jorge <julien.jorge@stuff-o-matic.com>
+Licensed under CC-BY-SA 3.0
+Downloaded from opengameart.org/content/large-nature-background
+
+Sound file
+==========
+The file pop.8svx was converted and modified by
+Enrique Mecklenburg Serkovic.
+
+Original wav file by Gniffelbaf.
+Licensed under CC0 1.0 Universal
+Downloaded from freesound.org/s/82109/
+
+
+Special thanks to:
+jPV for testing and bug fixing, but mostly for the suggestions and code correction!
