@@ -1,0 +1,97 @@
+@APPTITLE "Balloons"
+@APPAUTHOR "Enrique Mecklenburg"
+@APPVERSION "$VER: Balloons 1.1 (08-Oct-19)"
+@APPDESCRIPTION "Scratch example written in Hollywood"
+
+
+/*********************************
+*  Objective of the game is to   *
+*  click on the balloons to pop  *
+*  them before time ends.        *
+*********************************/
+
+@DISPLAY 1, {Width = 640, Height = 480}
+
+@BGPIC 2, "backgrounds/background.png"
+
+;balloon sprites, each with 2 frames, one with the
+;balloon image and one with the popped image
+@BRUSH 1, "sprites/balloon_blue.png", {LoadAlpha = True}
+@BRUSH 2, "sprites/balloon_black.png", {LoadAlpha = True}
+@BRUSH 3, "sprites/balloon_green.png", {LoadAlpha = True}
+@BRUSH 4, "sprites/balloon_red.png", {LoadAlpha = True}
+
+@SAMPLE 1, "sounds/pop.8svx"
+
+@INCLUDE "functions.hws"
+@INCLUDE "balloon.hws"
+
+EscapeQuit(True)
+
+SetFillStyle(#FILLCOLOR)
+
+balloons = 15          ;total ballons on screen
+time = 10              ;total time in seconds
+countdown = {}         ;table for storing time numbers
+score = 0              ;starting score
+scores = {}            ;table for storing score numbers
+done = False           ;is game over?
+
+
+/*****************
+ * Main function *
+ *****************/
+Function p_Start()
+    done = False          ; game is not over
+
+    SetFont(#SANS, 18, {Engine = #FONTENGINE_INBUILT})
+    SetFontStyle(#BOLD)
+    SetFontStyle(#ANTIALIAS)
+
+    DisplayTransitionFX(2, {Type = #FADE, Speed = 50, Parameter = #WHITE})	;display background with a transition fx
+
+    Box(0, 0, 640, 25, #GRAY, {Transparency = "50%"})          ;score and time area
+
+    p_CreateScore()                                            ;set starting score
+    p_CreateCountdown()                                        ;set remaining time
+    Wait(25)
+    p_CreateBalloons()                                         ;create and show balloons
+
+    StartTimer(1)                                              ;start timer
+
+    SetInterval(1, p_Countdown, 1000)                          ;execute timecountdown loop, 1 second interval
+    SetInterval(2, p_MoveBalloons, 1000/25)                    ;execute main loop at 25fps
+EndFunction
+
+
+/***********************************
+ * Check mouse and keyboard events *
+ ***********************************/
+Function p_EventFunction(msg)
+    Switch(msg.action)
+    Case "OnMouseDown":
+	    If done = False
+	        p_Burst()                                          ;check if balloon is hit
+	    EndIf
+    Case "OnKeyDown":
+	    If msg.key = " " And HaveObject(#TIMER, 1)	           ;check if SPACE pressed and timer 1 is running
+	        PauseTimer(1)				                       ;pause timer
+	        WaitKeyDown("Space")                               ;pause the script until SPACE is pressed again
+	        ResumeTimer(1)
+	    ElseIf (msg.key = "Y" Or msg.key = "y") And done       ;restart if game over
+	        p_CleanUp()
+	        p_Start()
+	    ElseIf (msg.key = "N" Or msg.key = "n") And done       ;quit if game over
+	        End()
+	    EndIf
+    EndSwitch
+EndFunction
+
+
+InstallEventHandler({OnMouseDown = p_EventFunction, OnKeyDown = p_EventFunction})
+
+p_Start()    ;start game
+
+Repeat
+    WaitEvent()
+Forever
