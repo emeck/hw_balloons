@@ -36,7 +36,7 @@ EndFunction
 Function balloon:pop()
     self.notPopped = False                          ;balloon now popped
     DisplaySprite(self.sprite, self.x, self.y, 2)   ;display popped frame
-    PlaySample(1)                                   ;play pop sound
+    PlaySample(3)                                   ;play pop sound
     Wait(1)
     RemoveSprite(self.sprite)                       ;remove balloon sprite
 EndFunction

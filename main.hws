@@ -10,7 +10,7 @@
 *  them before time ends.        *
 *********************************/
 
-@DISPLAY 1, {Width = 640, Height = 480}
+@DISPLAY 1, {Width = 640, Height = 480, Color = #GRAY}
 
 @BGPIC 2, "backgrounds/background.png"
 
@@ -21,28 +21,93 @@
 @BRUSH 3, "sprites/balloon_green.png", {LoadAlpha = True}
 @BRUSH 4, "sprites/balloon_red.png", {LoadAlpha = True}
 
-@SAMPLE 1, "sounds/pop.8svx"
+;menu button brushes
+@BRUSH 5, "buttons/red.png", {LoadAlpha = True}
+@BRUSH 6, "buttons/blue.png", {LoadAlpha = True}
+@BRUSH 7, "buttons/green.png", {LoadAlpha = True}
+@BRUSH 8, "buttons/gray.png", {LoadAlpha = True}
 
-@INCLUDE "functions.hws"
-@INCLUDE "balloon.hws"
+;game samples
+@SAMPLE 1, "sounds/menu.8svx"
+@SAMPLE 2, "sounds/button.8svx"
+@SAMPLE 3, "sounds/pop.8svx"
+@SAMPLE 4, "sounds/quit.8svx"
+@SAMPLE 5, "sounds/win.8svx"
+@SAMPLE 6, "sounds/lose.8svx"
+
+;include other files
+@INCLUDE "functions.hws"		;general functions
+@INCLUDE "balloon.hws"			;balloon object functions
 
 EscapeQuit(True)
 
 SetFillStyle(#FILLCOLOR)
 
-balloons = 15          ;total ballons on screen
-time = 10              ;total time in seconds
-countdown = {}         ;table for storing time numbers
-score = 0              ;starting score
-scores = {}            ;table for storing score numbers
-done = False           ;is game over?
+playerName$ = ""		;player's name
+balloons = 15			;total ballons on screen
+time = 10				;total time in seconds
+countdown = {}			;table for storing time numbers
+score = 0				;starting score
+scores = {}				;table for storing score numbers
+done = False			;is game over?
+
+
+/*******************************************
+ * Mouse and keyboard events while playing *
+ *******************************************/
+Function p_EventFunction(msg)
+    Switch(msg.action)
+    Case "OnMouseDown":
+	    If done = False
+	        p_Burst()                                          ;check if balloon is hit
+	    EndIf
+    Case "OnKeyDown":
+	    If msg.key = " " And HaveObject(#TIMER, 1)	           ;check if SPACE pressed and timer 1 is running
+	        PauseTimer(1)				                       ;pause timer
+	        WaitKeyDown("Space")                               ;pause the script until SPACE is pressed again
+	        ResumeTimer(1)
+	    ElseIf (msg.key = "Y" Or msg.key = "y") And done       ;restart if game over
+	        p_CleanUp()
+	        p_Play()
+	    ElseIf (msg.key = "N" Or msg.key = "n") And done       ;quit if game over
+	        p_CleanUp()
+			p_Start()
+	    EndIf
+    EndSwitch
+EndFunction
+
+
+/*****************************************
+*  Event table function for menu buttons *
+******************************************/
+function p_Buttons(msg)
+	Switch msg.action
+	Case "OnMouseUp"
+		If msg.id = button1
+			PlaySample(2)
+			p_Play()
+		ElseIf msg.id = button2
+			PlaySample(2)
+			;p_Mode2()
+		ElseIf msg.id = button3
+			PlaySample(2)
+			;p_Mode3()
+		ElseIf msg.id = button4
+			PlaySample(4)
+			Wait(25)
+			End()
+		EndIf
+	EndSwitch
+EndFunction
 
 
 /*****************
  * Main function *
  *****************/
-Function p_Start()
+Function p_Play()
     done = False          ; game is not over
+	
+	InstallEventHandler({OnMouseDown = p_EventFunction, OnKeyDown = p_EventFunction})
 
     SetFont(#SANS, 18, {Engine = #FONTENGINE_INBUILT})
     SetFontStyle(#BOLD)
@@ -64,31 +129,49 @@ Function p_Start()
 EndFunction
 
 
-/***********************************
- * Check mouse and keyboard events *
- ***********************************/
-Function p_EventFunction(msg)
-    Switch(msg.action)
-    Case "OnMouseDown":
-	    If done = False
-	        p_Burst()                                          ;check if balloon is hit
-	    EndIf
-    Case "OnKeyDown":
-	    If msg.key = " " And HaveObject(#TIMER, 1)	           ;check if SPACE pressed and timer 1 is running
-	        PauseTimer(1)				                       ;pause timer
-	        WaitKeyDown("Space")                               ;pause the script until SPACE is pressed again
-	        ResumeTimer(1)
-	    ElseIf (msg.key = "Y" Or msg.key = "y") And done       ;restart if game over
-	        p_CleanUp()
-	        p_Start()
-	    ElseIf (msg.key = "N" Or msg.key = "n") And done       ;quit if game over
-	        End()
-	    EndIf
-    EndSwitch
+/*************
+* Start menu *
+**************/
+Function p_Start()
+    SetFont(#SANS, 30, {Engine = #FONTENGINE_INBUILT})
+    SetFontStyle(#BOLD)
+    SetFontStyle(#ANTIALIAS)
+	SetFillStyle(#FILLCOLOR)
+
+	;events for start menu buttons
+	evttable = {OnMouseUp = p_Buttons}
+
+	DisplayTransitionFX(1, {Type = #FADE, Speed = 50, Parameter = #WHITE})	;display background with a transition fx
+
+	PlaySample(1)					;play menu sample
+
+	;show button brushes
+	DisplayBrush(5, 220, 150, {Width = 150, Height = 50})
+	DisplayBrush(6, 280, 215, {Width = 150, Height = 50})
+	DisplayBrush(7, 220, 280, {Width = 150, Height = 50})
+	DisplayBrush(8, 530, 420, {Width = 100, Height = 50})
+
+	button1Text = CreateTextObject(Nil, "Play", {Encoding=utf8})
+	DisplayTextObject(button1Text, 260, 160)
+	button1Text = CreateTextObject(Nil, "Level", {Encoding=utf8})
+	DisplayTextObject(button1Text, 330, 225)
+	button1Text = CreateTextObject(Nil, "Scores", {Encoding=utf8})
+	DisplayTextObject(button1Text, 240, 290)
+	button1Text = CreateTextObject(Nil, "Exit", {Encoding=utf8})
+	DisplayTextObject(button1Text, 555, 430)
+
+	;create buttons
+	button1 = MakeButton(Nil, #SIMPLEBUTTON, 220, 150, 150, 50, evttable)
+	button2 = MakeButton(Nil, #SIMPLEBUTTON, 280, 215, 150, 50, evttable)
+	button3 = MakeButton(Nil, #SIMPLEBUTTON, 220, 280, 150, 50, evttable)
+	button4 = MakeButton(Nil, #SIMPLEBUTTON, 530, 420, 100, 50, evttable)
+
+	;For i = 0 To 9
+	;	DebugPrint(highscores[i].name.." "..highscores[i].time.." "..highscores[i].date)
+	;Next
+
 EndFunction
 
-
-InstallEventHandler({OnMouseDown = p_EventFunction, OnKeyDown = p_EventFunction})
 
 p_Start()    ;start game
 

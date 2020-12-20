@@ -8,6 +8,44 @@ Function p_CreateBalloons()
 EndFunction
 
 
+/*****************
+ * Move balloons *
+ *****************/
+Function p_MoveBalloons()
+    BeginRefresh()
+    For Local i = 1 To balloons
+        balloon[i]:move()                                               ;move balloon object
+    Next
+    EndRefresh()
+EndFunction
+
+
+/***************************
+ * Check if balloon is hit *
+ ***************************/
+Function p_Burst()
+    Local mx, my = MouseX(), MouseY()		                            ;store mouse position when clicked
+
+    For Local i = balloons To 1 Step -1                                 ;negative step so click works on balloon "on top" in case of overlapping with other
+        If balloon[i].notPopped
+            Local bx, by = balloon[i].x, balloon[i].y                   ;copy balloon position
+
+            ;check if balloon sprite was hit
+	        If mx > bx And mx < bx + 54 And my > by And my < by + 70
+	            balloon[i]:pop()                                        ;remove popped balloon
+                RemoveSprite(scores[score])
+                score = score + 1
+	            DisplaySprite(scores[score], 70, 5)                     ;update score: shows next frame of scores sprite
+	            If score = balloons
+		            p_GameOver()
+	            EndIf
+	            Break
+            EndIf
+        EndIf
+    Next
+EndFunction
+
+
 /********************************************
  * Create scores and display starting score *
  ********************************************/
@@ -46,42 +84,7 @@ Function p_CreateCountdown()
 EndFunction
 
 
-/*****************
- * Move balloons *
- *****************/
-Function p_MoveBalloons()
-    BeginRefresh()
-    For Local i = 1 To balloons
-        balloon[i]:move()                                               ;move balloon object
-    Next
-    EndRefresh()
-EndFunction
 
-
-/***************************
- * Check if balloon is hit *
- ***************************/
-Function p_Burst()
-    Local mx, my = MouseX(), MouseY()		                            ;store mouse position when clicked
-
-    For Local i = balloons To 1 Step -1                                 ;negative step so click works on balloon "on top" in case of overlapping with other
-        If balloon[i].notPopped
-            Local bx, by = balloon[i].x, balloon[i].y                   ;copy balloon position
-
-            ;check if balloon sprite was hit
-	        If mx > bx And mx < bx + 54 And my > by And my < by + 70
-	            balloon[i]:pop()                                        ;remove popped balloon
-                RemoveSprite(scores[score])
-                score = score + 1
-	            DisplaySprite(scores[score], 70, 5)                     ;update score: shows next frame of scores sprite
-	            If score = balloons
-		            p_GameOver()
-	            EndIf
-	            Break
-            EndIf
-        EndIf
-    Next
-EndFunction
 
 
 /************************
@@ -125,8 +128,10 @@ Function p_GameOver(endText$)
     SetFontStyle(#ANTIALIAS)
 
     If endText$ = "lose"
+		PlaySample(6)
 	    TextOut(#CENTER, #CENTER, "Game Over")
     Else
+		PlaySample(5)
 	    TextOut(#CENTER, #CENTER, "You won!")
     EndIf
 
@@ -157,3 +162,19 @@ Function p_CleanUp()
     score = 0
 EndFunction
 
+
+
+
+/* Not implemented yet!
+
+Function p_GetName()
+	Local name$, ok
+
+	If (playerName$ = "")
+    	name$, ok = StringRequest("Player´s name", "Write your name", "", #ALL, 18)
+		Return (name$, ok)
+	Else
+		Return (playerName$, 1)
+	EndIf
+EndFunction
+*/
