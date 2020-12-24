@@ -1,6 +1,6 @@
 @APPTITLE "Balloons"
 @APPAUTHOR "Enrique Mecklenburg"
-@APPVERSION "$VER: Balloons 1.1 (08-Oct-19)"
+@APPVERSION "$VER: Balloons 1.5 (24-Dec-20)"
 @APPDESCRIPTION "Scratch example written in Hollywood"
 
 
@@ -43,13 +43,14 @@ EscapeQuit(True)
 
 SetFillStyle(#FILLCOLOR)
 
-playerName$ = ""		;player's name
-balloons = 15			;total ballons on screen
-time = 10				;total time in seconds
-countdown = {}			;table for storing time numbers
-score = 0				;starting score
-scores = {}				;table for storing score numbers
-done = False			;is game over?
+
+player = {name = "", score = 0, time = 0, date = ""}	;player's data
+balloons = 15								;total ballons on screen
+time = 10									;total time in seconds
+countdown = {}								;table for storing time numbers
+scores = {}									;table for storing score numbers
+highscores = {}								;highscores table
+done = False								;is game over?
 
 
 /*******************************************
@@ -88,10 +89,10 @@ function p_Buttons(msg)
 			p_Play()
 		ElseIf msg.id = button2
 			PlaySample(2)
-			;p_Mode2()
+			p_SetName()
 		ElseIf msg.id = button3
 			PlaySample(2)
-			;p_Mode3()
+			p_ShowScores()
 		ElseIf msg.id = button4
 			PlaySample(4)
 			Wait(25)
@@ -105,7 +106,14 @@ EndFunction
  * Main function *
  *****************/
 Function p_Play()
-    done = False          ; game is not over
+    done = False			;game is not over
+
+	If (player.name = "")	;if no player name yet...
+		p_SetName()
+	EndIf
+	
+	player.time = 0
+	player.date = ""
 	
 	InstallEventHandler({OnMouseDown = p_EventFunction, OnKeyDown = p_EventFunction})
 
@@ -153,7 +161,7 @@ Function p_Start()
 
 	button1Text = CreateTextObject(Nil, "Play", {Encoding=utf8})
 	DisplayTextObject(button1Text, 260, 160)
-	button1Text = CreateTextObject(Nil, "Level", {Encoding=utf8})
+	button1Text = CreateTextObject(Nil, "Name", {Encoding=utf8})
 	DisplayTextObject(button1Text, 330, 225)
 	button1Text = CreateTextObject(Nil, "Scores", {Encoding=utf8})
 	DisplayTextObject(button1Text, 240, 290)
@@ -165,11 +173,8 @@ Function p_Start()
 	button2 = MakeButton(Nil, #SIMPLEBUTTON, 280, 215, 150, 50, evttable)
 	button3 = MakeButton(Nil, #SIMPLEBUTTON, 220, 280, 150, 50, evttable)
 	button4 = MakeButton(Nil, #SIMPLEBUTTON, 530, 420, 100, 50, evttable)
-
-	;For i = 0 To 9
-	;	DebugPrint(highscores[i].name.." "..highscores[i].time.." "..highscores[i].date)
-	;Next
-
+	
+	p_OpenScores()
 EndFunction
 
 

@@ -33,10 +33,11 @@ Function p_Burst()
             ;check if balloon sprite was hit
 	        If mx > bx And mx < bx + 54 And my > by And my < by + 70
 	            balloon[i]:pop()                                        ;remove popped balloon
-                RemoveSprite(scores[score])
-                score = score + 1
-	            DisplaySprite(scores[score], 70, 5)                     ;update score: shows next frame of scores sprite
-	            If score = balloons
+                RemoveSprite(scores[player.score])
+                player.score = player.score + 1
+	            DisplaySprite(scores[player.score], 70, 5)				;update score: shows next frame of scores sprite
+	            If player.score = balloons
+					player.time = GetTimer(1) / 1000 ;get elapsed time
 		            p_GameOver()
 	            EndIf
 	            Break
@@ -59,7 +60,7 @@ Function p_CreateScore()
     Next
 
     DisplayTextObject(scoreText, 10, 4)                                 ;display "Score" text
-    DisplaySprite(scores[score], 70, 4)                                 ;display starting score
+    DisplaySprite(scores[player.score], 70, 4)                                 ;display starting score
 EndFunction
 
 
@@ -82,9 +83,6 @@ Function p_CreateCountdown()
     DisplayTextObject(timeText, 550, 4)                                 ;display "Time" text
     DisplaySprite(countdown[0], 600, 4)                                 ;display starting time
 EndFunction
-
-
-
 
 
 /************************
@@ -133,6 +131,7 @@ Function p_GameOver(endText$)
     Else
 		PlaySample(5)
 	    TextOut(#CENTER, #CENTER, "You won!")
+		p_CompareTimes()
     EndIf
 
     Wait(100)
@@ -159,22 +158,70 @@ Function p_CleanUp()
     FreeTextObject(scoreText)             ;free text objects
     FreeTextObject(timeText)
 
-    score = 0
+    player.score = 0
 EndFunction
 
 
+/********************
+* Set player's name *
+*********************/
+Function p_SetName()
+	player.name = StringRequest("Player´s name", "Write your name", "", #ALL, 18)
+EndFunction
 
 
-/* Not implemented yet!
+/******************
+* Read highscores *
+*******************/
+Function p_OpenScores()
+	If(Exists("highscores.bin"))						;check if file exists
+		OpenFile(1, "highscores.bin", #MODE_READ)		;open file
+		highscores = ReadTable(1)						;read table from file
+		CloseFile(1)
+	Else												;if file doesn't exist
+		Local date$ = GetDate()							;get system date
+		
+		For Local i = 0 To 9							;insert 10 highscores
+			InsertItem(highscores, {name = "Enrique", time = 9.999, date = date$})
+		Next
 
-Function p_GetName()
-	Local name$, ok
-
-	If (playerName$ = "")
-    	name$, ok = StringRequest("Player´s name", "Write your name", "", #ALL, 18)
-		Return (name$, ok)
-	Else
-		Return (playerName$, 1)
+		OpenFile(1, "highscores.bin", #MODE_WRITE)		;create and open file
+		WriteTable(1, highscores)						;write table to file
+		CloseFile(1)
 	EndIf
 EndFunction
-*/
+
+
+/****************************************
+* Compare player's time with highscores *
+*****************************************/
+Function p_CompareTimes()
+	For Local i = 0 To 9
+		If player.time < highscores[i].time
+			InsertItem(highscores, {name = player.name, time = player.time, date = GetDate()}, i)	;insert item in position "i"
+			RemoveItem(highscores)						;remove last item to keep 10 highscore in total
+			p_WriteScores()
+			Break
+		EndIf
+	Next
+EndFunction
+
+
+/********
+* TO DO *
+*********/
+Function p_ShowScores()
+	For Local i = 0 To 9
+		DebugPrint(highscores[i].name.." "..highscores[i].time.." "..highscores[i].date)
+	Next
+EndFunction
+
+
+/*************************
+* Write highscores table *
+**************************/
+Function p_WriteScores()
+		OpenFile(1, "highscores.bin", #MODE_WRITE)		;pen file to write
+		WriteTable(1, highscores)						;write table to file
+		CloseFile(1)
+EndFunction
