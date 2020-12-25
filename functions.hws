@@ -207,12 +207,41 @@ Function p_CompareTimes()
 EndFunction
 
 
-/********
-* TO DO *
-*********/
+/************************
+* Show highscores table *
+*************************/
 Function p_ShowScores()
+	Local Col_A, Col_B, Col_C = 50, 250, 400
+	Local Row = 15
+	CreateDisplay(3, {Width = 610, Height = 430, Color = #GRAY, Active = True, Title = "Highscores"})
+
+	SetFont(#SANS, 30, {Engine = #FONTENGINE_INBUILT})
+    SetFontStyle(#BOLD)
+    SetFontStyle(#ANTIALIAS)
+	SetFontColor(#BLACK)
+
+	OpenDisplay(3)
+
+	DisplayBrush(8, 480, 360, {Width = 100, Height = 50})
+	button5Text = CreateTextObject(Nil, "Close", {Encoding=utf8})
+	DisplayTextObject(button5Text, 495, 370)
+	button5 = MakeButton(Nil, #SIMPLEBUTTON, 480, 360, 100, 50, evttable)
+
+	TextOut(Col_A, Row, "Name")
+	TextOut(Col_B, Row, "Time")
+	TextOut(Col_C, Row, "Date")
+	Row = 20
+	
+	SetFontColor(#WHITE)
+	SetFontStyle(#NORMAL)
+	SetFontStyle(#ANTIALIAS)
+	
 	For Local i = 0 To 9
-		DebugPrint(highscores[i].name.." "..highscores[i].time.." "..highscores[i].date)
+		Row = Row + 30
+		;NPrint(highscores[i].name.." "..highscores[i].time.." "..highscores[i].date)
+		TextOut(Col_A, Row, highscores[i].name)
+		TextOut(Col_B, Row, highscores[i].time)
+		TextOut(Col_C, Row, highscores[i].date)
 	Next
 EndFunction
 

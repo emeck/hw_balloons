@@ -50,7 +50,7 @@ time = 10									;total time in seconds
 countdown = {}								;table for storing time numbers
 scores = {}									;table for storing score numbers
 highscores = {}								;highscores table
-done = False								;is game over?
+done = True									;is game over?
 
 
 /*******************************************
@@ -60,17 +60,17 @@ Function p_EventFunction(msg)
     Switch(msg.action)
     Case "OnMouseDown":
 	    If done = False
-	        p_Burst()                                          ;check if balloon is hit
-	    EndIf
+	        p_Burst()											;check if balloon is hit
+		EndIf
     Case "OnKeyDown":
-	    If msg.key = " " And HaveObject(#TIMER, 1)	           ;check if SPACE pressed and timer 1 is running
-	        PauseTimer(1)				                       ;pause timer
-	        WaitKeyDown("Space")                               ;pause the script until SPACE is pressed again
+	    If msg.key = " " And HaveObject(#TIMER, 1)				;check if SPACE pressed and timer 1 is running
+	        PauseTimer(1)										;pause timer
+	        WaitKeyDown("Space")								;pause the script until SPACE is pressed again
 	        ResumeTimer(1)
-	    ElseIf (msg.key = "Y" Or msg.key = "y") And done       ;restart if game over
+	    ElseIf (msg.key = "Y" Or msg.key = "y") And done		;restart if game over
 	        p_CleanUp()
 	        p_Play()
-	    ElseIf (msg.key = "N" Or msg.key = "n") And done       ;quit if game over
+	    ElseIf (msg.key = "N" Or msg.key = "n") And done		;quit if game over
 	        p_CleanUp()
 			p_Start()
 	    EndIf
@@ -97,6 +97,9 @@ function p_Buttons(msg)
 			PlaySample(4)
 			Wait(25)
 			End()
+		ElseIf msg.id = button5
+			SelectDisplay(1)
+			FreeDisplay(3)
 		EndIf
 	EndSwitch
 EndFunction
@@ -120,6 +123,7 @@ Function p_Play()
     SetFont(#SANS, 18, {Engine = #FONTENGINE_INBUILT})
     SetFontStyle(#BOLD)
     SetFontStyle(#ANTIALIAS)
+	SetFontColor(#WHITE)
 
     DisplayTransitionFX(2, {Type = #FADE, Speed = 50, Parameter = #WHITE})	;display background with a transition fx
 
