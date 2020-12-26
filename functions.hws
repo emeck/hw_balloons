@@ -218,7 +218,6 @@ Function p_ShowScores()
 	SetFont(#SANS, 30, {Engine = #FONTENGINE_INBUILT})
     SetFontStyle(#BOLD)
     SetFontStyle(#ANTIALIAS)
-	SetFontColor(#BLACK)
 
 	OpenDisplay(3)
 
@@ -227,6 +226,7 @@ Function p_ShowScores()
 	DisplayTextObject(button5Text, 495, 370)
 	button5 = MakeButton(Nil, #SIMPLEBUTTON, 480, 360, 100, 50, evttable)
 
+	SetFontColor(#BLACK)
 	TextOut(Col_A, Row, "Name")
 	TextOut(Col_B, Row, "Time")
 	TextOut(Col_C, Row, "Date")
