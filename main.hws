@@ -44,8 +44,10 @@
 @SAMPLE 6, "sounds/lose.8svx"
 
 ;include other source files
-@INCLUDE "functions.hws"		;general functions
+@INCLUDE "play.hws"				;game functions
 @INCLUDE "balloon.hws"			;balloon object functions
+@INCLUDE "language.hws"			;catalog function
+@INCLUDE "scores.hws"			;highscores functions
 
 EscapeQuit(True)
 
@@ -59,6 +61,8 @@ countdown = {}								;table for storing time numbers
 scores = {}									;table for storing score numbers
 highscores = {}								;highscores table
 done = True									;is game over?
+catalog$ = {}								;catalog table
+;defcat$ = {}								;default English catalog
 
 
 /*******************************************
@@ -75,12 +79,6 @@ Function p_EventFunction(msg)
 	        PauseTimer(1)										;pause timer
 	        WaitKeyDown("Space")								;pause the script until SPACE is pressed again
 	        ResumeTimer(1)
-	    ElseIf (msg.key = "Y" Or msg.key = "y") And done		;restart if game over
-	        p_CleanUp()
-	        p_Play()
-	    ElseIf (msg.key = "N" Or msg.key = "n") And done		;quit if game over
-	        p_CleanUp()
-			p_Start()
 	    EndIf
     EndSwitch
 EndFunction
@@ -89,7 +87,7 @@ EndFunction
 /*****************************************
 *  Event table function for menu buttons *
 ******************************************/
-function p_Buttons(msg)
+Function p_Buttons(msg)
 	Switch msg.action
 	Case "OnMouseUp"
 		If msg.id = button1
@@ -108,6 +106,12 @@ function p_Buttons(msg)
 		ElseIf msg.id = button5
 			SelectDisplay(1)
 			FreeDisplay(3)
+		ElseIf msg.id = button6
+			p_CleanUp()
+	        p_Play()
+		ElseIf msg.id = button7
+			p_CleanUp()
+			p_Start()
 		EndIf
 	EndSwitch
 EndFunction
@@ -120,11 +124,11 @@ Function p_Play()
     done = False			;game is not over
 
 	If (player.name = "")	;if no player name yet...
-		p_SetName()
+		p_SetName()			/****CHECK WHY CRASHES WITH 1 CHARACTER NAME!!****/
 	EndIf
 	
-	player.time = 0
-	player.date = ""
+	player.time = 0			;reset time from last game played
+	player.date = ""		;reset date from last game played
 	
 	InstallEventHandler({OnMouseDown = p_EventFunction, OnKeyDown = p_EventFunction})
 
@@ -163,7 +167,7 @@ Function p_Start()
 
 	DisplayTransitionFX(1, {Type = #FADE, Speed = 50, Parameter = #WHITE})	;display background with a transition fx
 
-	PlaySample(1)					;play menu sample
+	PlaySample(1)		;play menu sample
 
 	;show button brushes
 	DisplayBrush(5, 220, 150, {Width = 150, Height = 50})
@@ -171,14 +175,15 @@ Function p_Start()
 	DisplayBrush(7, 220, 280, {Width = 150, Height = 50})
 	DisplayBrush(8, 530, 420, {Width = 100, Height = 50})
 
-	button1Text = CreateTextObject(Nil, "Play", {Encoding=utf8})
+	;create and display button's text
+	button1Text = CreateTextObject(Nil, catalog$[0], {Encoding=utf8})
 	DisplayTextObject(button1Text, 260, 160)
-	button1Text = CreateTextObject(Nil, "Name", {Encoding=utf8})
-	DisplayTextObject(button1Text, 330, 225)
-	button1Text = CreateTextObject(Nil, "Scores", {Encoding=utf8})
-	DisplayTextObject(button1Text, 240, 290)
-	button1Text = CreateTextObject(Nil, "Exit", {Encoding=utf8})
-	DisplayTextObject(button1Text, 555, 430)
+	button2Text = CreateTextObject(Nil, catalog$[1], {Encoding=utf8})
+	DisplayTextObject(button2Text, 330, 225)
+	button3Text = CreateTextObject(Nil, catalog$[2], {Encoding=utf8})
+	DisplayTextObject(button3Text, 240, 290)
+	button4Text = CreateTextObject(Nil, catalog$[3], {Encoding=utf8})
+	DisplayTextObject(button4Text, 555, 430)
 
 	;create buttons
 	button1 = MakeButton(Nil, #SIMPLEBUTTON, 220, 150, 150, 50, evttable)
@@ -189,8 +194,8 @@ Function p_Start()
 	p_OpenScores()
 EndFunction
 
-
-p_Start()    ;start game
+p_ReadCatalog()	;read locale catalog
+p_Start()    	;start game
 
 Repeat
     WaitEvent()

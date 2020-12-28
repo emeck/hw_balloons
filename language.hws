@@ -1,0 +1,26 @@
+Function p_ReadCatalog()
+	Local defcat$ = {}
+	defcat$[0] = "Play"
+	defcat$[1] = "Name"
+	defcat$[2] = "Scores"
+	defcat$[3] = "Exit"
+	defcat$[4] = "Time"
+	defcat$[5] = "Date"
+	defcat$[6] = "Player´s name"
+	defcat$[7] = "Write your name"
+	defcat$[8] = "Best times"
+	defcat$[9] = "Close"
+	defcat$[10] = "Score"
+	defcat$[11] = "Yes"
+	defcat$[12] = "No"
+	defcat$[13] = "Game over"
+	defcat$[14] = "You won!"
+	defcat$[15] = "Play again?"
+	defcat$[16] = "You made a higscore!"
+
+	OpenCatalog("balloons.catalog")						;read catalog file
+
+	For Local k = 0 To 16
+		catalog$[k] = GetCatalogString(k, defcat$[k])	;load catalog strings
+	Next
+EndFunction
