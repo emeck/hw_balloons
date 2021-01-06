@@ -5,13 +5,14 @@ balloon = {}           ;prototype table for balloon objects
 
 ;constructor for new balloon object
 Function balloon:new()    
-    ;create sprite from random brush, width and height, load 2 frames and it has 2 frames per row
-    o = {sprite = CreateSprite(Nil, #BRUSH, Rnd(4) + 1, 54, 70, 2, 2),
+    ;create sprite from random brush, width and height, 
+	o = {sprite = CopySprite(Rnd(4) + 1, Nil),		;set balloon's sprite randomly
          x = 5 + Rnd(575),                          ;set balloon's initial horizontal coord
 		 y = 30 + Rnd(345),                         ;set balloon's initial vertical coord
 		 sx = -3 + Rnd(7),                          ;set balloon's horizontal speed
 		 sy = -3 + Rnd(7),                          ;set balloon's horizontal speed
          notPopped = True}                          ;created balloon is not popped yet
+
     SetMetaTable(o, {__index = balloon})            ;set balloon as the "prototype" for new balloon objects
     Return(o)
 EndFunction
@@ -34,10 +35,25 @@ EndFunction
 
 ;pop balloon object when hit
 Function balloon:pop()
+	Local mx, my = MouseX(), MouseY()											;store mouse position when clicked
+
+	If mx > self.x And mx < self.x + 54 And my > self.y And my < self.y + 70	;check if balloon sprite was hit
+    	self.notPopped = False													;balloon now popped
+    	DisplaySprite(self.sprite, self.x, self.y, 2)							;display popped frame
+    	PlaySample(3)															;play pop sound
+    	Wait(1)
+    	RemoveSprite(self.sprite)												;remove balloon sprite
+		Return(True)
+	EndIf
+	
+	Return(False)
+EndFunction
+/*
+Function balloon:pop()
     self.notPopped = False                          ;balloon now popped
     DisplaySprite(self.sprite, self.x, self.y, 2)   ;display popped frame
     PlaySample(3)                                   ;play pop sound
     Wait(1)
     RemoveSprite(self.sprite)                       ;remove balloon sprite
 EndFunction
-
+*/

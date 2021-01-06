@@ -24,24 +24,18 @@ EndFunction
  * Check if balloon is hit *
  ***************************/
 Function p_Burst()
-    Local mx, my = MouseX(), MouseY()		                            ;store mouse position when clicked
-
-    For Local i = balloons To 1 Step -1                                 ;negative step so click works on balloon "on top" in case of overlapping with other
+    For Local i = balloons To 1 Step -1							;negative step so click works on balloon "on top" in case of overlapping with other
         If balloon[i].notPopped
-            Local bx, by = balloon[i].x, balloon[i].y                   ;copy balloon position
-
-            ;check if balloon sprite was hit
-	        If mx > bx And mx < bx + 54 And my > by And my < by + 70
-	            balloon[i]:pop()                                        ;remove popped balloon
-                RemoveSprite(scores[player.score])
-                player.score = player.score + 1
-	            DisplaySprite(scores[player.score], 70, 5)				;update score: shows next frame of scores sprite
-	            If player.score = balloons
-					player.time = GetTimer(1) / 1000 ;get elapsed time
-					Local time$ = p_CompareTimes()
-		            p_GameOver(time$)					
+            If (balloon[i]:pop())								;if balloon was hit
+                RemoveSprite(scores[player.score])				;remove old score
+                player.score = player.score + 1					;uodate score
+	            DisplaySprite(scores[player.score], 70, 5)		;show updated score: shows next frame of scores sprite
+	            If player.score = balloons						;check if all balloons popped
+					player.time = GetTimer(1) / 1000			;get elapsed time
+					Local time$ = p_CompareTimes()				;check if time is in top 10
+		            p_GameOver(time$)							;end game
 	            EndIf
-	            Break
+	            Break											;balloon was popped and game continues, break loop
             EndIf
         EndIf
     Next
@@ -52,7 +46,7 @@ EndFunction
  * Create scores and display starting score *
  ********************************************/
 Function p_CreateScore()
-    scoreText = CreateTextObject(Nil, catalog$[10])				;create "Score" text
+    scoreText = CreateTextObject(Nil, catalog$[10])						;create "Score" text
 
     For Local i = 0 To balloons
 	    CreateTextObject(1, PadNum(i, 2))                               ;create numbers for score as text objects
@@ -131,6 +125,10 @@ Function p_GameOver(endText$)
 	    TextOut(#CENTER, #CENTER, catalog$[13])
 	ElseIf endText$ = "high"
 		PlaySample(5)
+		DisplayBrush(13, #CENTER - 25, #CENTER - 100, {Width = 35, Height = 37, AnchorX = 0.5, AnchorY = 0.5})
+		DisplayBrush(14, #CENTER - 50, #CENTER - 100, {Width = 35, Height = 37, AnchorX = 0.5, AnchorY = 0.5})
+		DisplayBrush(15, #CENTER + 25, #CENTER - 100, {Width = 35, Height = 37, AnchorX = 0.5, AnchorY = 0.5})
+		DisplayBrush(16, #CENTER + 50, #CENTER - 100, {Width = 35, Height = 37, AnchorX = 0.5, AnchorY = 0.5})
 	    TextOut(#CENTER, #CENTER - 50, catalog$[16])
     Else
 		PlaySample(5)
@@ -140,13 +138,9 @@ Function p_GameOver(endText$)
     Wait(100)
     TextOut(#CENTER, 260, catalog$[15])
 	
-	;Yes/No buttons
-	DisplayBrush(5, 210, 330, {Width = 100, Height = 50})
-	DisplayBrush(6, 330, 330, {Width = 100, Height = 50})
-	buttonYesText = CreateTextObject(Nil, catalog$[11], {Encoding=utf8})
-	DisplayTextObject(buttonYesText, 230, 340)
-	buttonNoText = CreateTextObject(Nil, catalog$[12], {Encoding=utf8})
-	DisplayTextObject(buttonNoText, 370, 340)
+	;create and display Yes/No buttons for playing again
+	DisplayBrush(11, #CENTER - 50, 340, {Width = 35, Height = 37, AnchorX = 0.5, AnchorY = 0.5})
+	DisplayBrush(9, #CENTER + 50, 340, {Width = 35, Height = 37, AnchorX = 0.5, AnchorY = 0.5})
 	button6 = MakeButton(Nil, #SIMPLEBUTTON, 210, 330, 100, 50, evttable)
 	button7 = MakeButton(Nil, #SIMPLEBUTTON, 330, 330, 100, 50, evttable)
 EndFunction
@@ -157,21 +151,25 @@ EndFunction
  ************/
 Function p_CleanUp()
     For Local i = 0 To balloons
-	    FreeSprite(scores[i])             ;free sprites created for score
+	    FreeSprite(scores[i])				;free sprites created for score
     Next
 
     For Local i = 0 To time
-	    FreeSprite(countdown[i])           ;free sprites created for timer
+	    FreeSprite(countdown[i])			;free sprites created for timer
     Next
 
     For Local i = 1 To balloons
-	    FreeSprite(balloon[i].sprite)     ;free sprites created for balloons
+	    FreeSprite(balloon[i].sprite)		;free sprites created for balloons
     Next
 
-    FreeTextObject(scoreText)             ;free text objects
+    FreeTextObject(scoreText)				;free text objects
     FreeTextObject(timeText)
 
-    player.score = 0
+	DeleteButton(button6)					;delete "Yes" button
+	DeleteButton(button7)					;delete "No" button
+	
+    player.score = 0						;clear last score
+	
+	SelectDisplay(1)
+	FreeDisplay(2)
 EndFunction
-
-

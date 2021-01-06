@@ -10,19 +10,19 @@ EndFunction
 * Read highscores *
 *******************/
 Function p_OpenScores()
-	If(Exists("highscores.bin"))						;check if file exists
-		OpenFile(1, "highscores.bin", #MODE_READ)		;open file
-		highscores = ReadTable(1)						;read table from file
+	If(Exists("highscores.bin"))							;check if file exists
+		OpenFile(1, "highscores.bin", #MODE_READ)			;open file
+		highscores = ReadTable(1)							;read table from file
 		CloseFile(1)
-	Else												;if file doesn't exist
-		Local date$ = GetDate()							;get system date
+	Else													;if file doesn't exist
+		Local date$ = GetDate()								;get system date
 		
-		For Local i = 0 To 9							;insert 10 highscores
+		For Local i = 0 To 9								;insert 10 highscores
 			InsertItem(highscores, {name = "Enrique", time = 9.999, date = date$})
 		Next
 
-		OpenFile(1, "highscores.bin", #MODE_WRITE)		;create and open file
-		WriteTable(1, highscores)						;write table to file
+		OpenFile(1, "highscores.bin", #MODE_WRITE)			;create and open file
+		WriteTable(1, highscores)							;write table to file
 		CloseFile(1)
 	EndIf
 EndFunction
@@ -38,9 +38,9 @@ Function p_CompareTimes()
 			RemoveItem(highscores)						;remove last item to keep 10 highscore in total
 			p_WriteScores()
 			Return("high")
-			;Break
 		EndIf
 	Next
+	Return("low")
 EndFunction
 
 
@@ -57,11 +57,17 @@ Function p_ShowScores()
     SetFontStyle(#ANTIALIAS)
 
 	OpenDisplay(3)
-
-	DisplayBrush(8, 480, 360, {Width = 100, Height = 50})
-	button5Text = CreateTextObject(Nil, catalog$[9], {Encoding=utf8})
-	DisplayTextObject(button5Text, 495, 370)
-	button5 = MakeButton(Nil, #SIMPLEBUTTON, 480, 360, 100, 50, evttable)
+	EnableLayers()
+	
+	;create and display close button
+	button5Tag$ = CreateTextObject(Nil, catalog$[9], {Encoding=utf8})
+	bt5_tag = ConvertToBrush(#TEXTOBJECT, button5Tag$, Nil)
+	FreeTextObject(button5Tag$)
+	DisplayBrush(9, 550, 380, {Width = 35, Height = 37, Name = "close1", Hidden = True})
+	DisplayBrush(10, 550, 380, {Width = 35, Height = 37, Name = "close2"})
+	bwidth = GetAttribute(#BRUSH, bt5_tag, #ATTRWIDTH)
+	DisplayBrush(bt5_tag, 545 - bwidth, 382)
+	button5 = MakeButton(Nil, #SIMPLEBUTTON, 545 - bwidth, 382, 40 + bwidth, 35, evttable)
 
 	SetFontColor(#BLACK)
 	TextOut(Col_A, Row, catalog$[1])
