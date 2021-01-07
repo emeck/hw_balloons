@@ -1,6 +1,6 @@
 @APPTITLE "Balloons"
 @APPAUTHOR "Enrique Mecklenburg Serkovic"
-@APPVERSION "$VER: Balloons 1.6 (28-Dec-20)"
+@APPVERSION "$VER: Balloons 1.8 (07-Jan-21)"
 @APPDESCRIPTION "Scratch example written in Hollywood"
 @APPICON {Ic16x16 = "icons/icon16x16.png",
 		  Ic16x16s = "icons/icon16x16.png",
@@ -115,6 +115,12 @@ Function p_Buttons(msg)
 		ElseIf msg.id = button5
 			HideLayer("close2")
 			ShowLayer("close1")
+		ElseIf msg.id = button6
+			HideLayer("ok2")
+			ShowLayer("ok1")
+		ElseIf msg.id = button7
+			HideLayer("no2")
+			ShowLayer("no1")
 		EndIf
 	Case "OnMouseOut"
 		If msg.id = button1
@@ -132,6 +138,12 @@ Function p_Buttons(msg)
 		ElseIf msg.id = button5
 			HideLayer("close1")
 			ShowLayer("close2")
+		ElseIf msg.id = button6
+			HideLayer("ok1")
+			ShowLayer("ok2")
+		ElseIf msg.id = button7
+			HideLayer("no1")
+			ShowLayer("no2")
 		EndIf
 	Case "OnMouseUp"
 		If msg.id = button1					;play

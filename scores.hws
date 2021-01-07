@@ -34,8 +34,10 @@ EndFunction
 Function p_CompareTimes()
 	For Local i = 0 To 9
 		If player.time < highscores[i].time
-			InsertItem(highscores, {name = player.name, time = player.time, date = GetDate()}, i)	;insert item in position "i"
-			RemoveItem(highscores)						;remove last item to keep 10 highscore in total
+			InsertItem(highscores, {name = player.name,
+									time = player.time,
+									date = GetDate()}, i)	;insert item in position "i"
+			RemoveItem(highscores)							;remove last item to keep 10 highscore in total
 			p_WriteScores()
 			Return("high")
 		EndIf
@@ -50,7 +52,7 @@ EndFunction
 Function p_ShowScores()
 	Local Col_A, Col_B, Col_C = 50, 250, 400
 	Local Row = 15
-	CreateDisplay(3, {Width = 610, Height = 430, Color = #GRAY, Active = True, Title = catalog$[8]})
+	CreateDisplay(3, {Width = 610, Height = 430, Color = #GRAY, NoClose = True, Active = True, Title = catalog$[8]})
 
 	SetFont(#SANS, 30, {Engine = #FONTENGINE_INBUILT})
     SetFontStyle(#BOLD)
@@ -81,7 +83,6 @@ Function p_ShowScores()
 	
 	For Local i = 0 To 9
 		Row = Row + 30
-		;NPrint(highscores[i].name.." "..highscores[i].time.." "..highscores[i].date)
 		TextOut(Col_A, Row, highscores[i].name)
 		TextOut(Col_B, Row, highscores[i].time)
 		TextOut(Col_C, Row, highscores[i].date)
