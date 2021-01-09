@@ -127,14 +127,14 @@ Function p_GameOver(endText$)
 	    TextOut(#CENTER, #CENTER, catalog$[13])
 	ElseIf endText$ = "high"
 		PlaySample(5)
-		DisplayBrush(13, #CENTER - 25, #CENTER - 100, {Width = 35, Height = 37, AnchorX = 0.5, AnchorY = 0.5})
-		DisplayBrush(14, #CENTER - 75, #CENTER - 100, {Width = 35, Height = 37, AnchorX = 0.5, AnchorY = 0.5})
-		DisplayBrush(15, #CENTER + 25, #CENTER - 100, {Width = 35, Height = 37, AnchorX = 0.5, AnchorY = 0.5})
-		DisplayBrush(16, #CENTER + 75, #CENTER - 100, {Width = 35, Height = 37, AnchorX = 0.5, AnchorY = 0.5})
+		DisplayBrush(13, #CENTER - 25, #CENTER - 100, {AnchorX = 0.5, AnchorY = 0.5})
+		DisplayBrush(14, #CENTER - 75, #CENTER - 100, {AnchorX = 0.5, AnchorY = 0.5})
+		DisplayBrush(15, #CENTER + 25, #CENTER - 100, {AnchorX = 0.5, AnchorY = 0.5})
+		DisplayBrush(16, #CENTER + 75, #CENTER - 100, {AnchorX = 0.5, AnchorY = 0.5})
 	    TextOut(#CENTER, #CENTER - 50, catalog$[16])
     Else
 		PlaySample(5)
-		DisplayBrush(14, #CENTER, #CENTER - 50, {Width = 35, Height = 37, AnchorX = 0.5, AnchorY = 0.5})
+		DisplayBrush(15, #CENTER, #CENTER - 50, {AnchorX = 0.5, AnchorY = 0.5})
 	    TextOut(#CENTER, #CENTER, catalog$[14])
     EndIf
 
@@ -142,10 +142,10 @@ Function p_GameOver(endText$)
     TextOut(#CENTER, 260, catalog$[15])
 	
 	;create and display Yes/No buttons for playing again
-	DisplayBrush(11, 240, 330, {Name = "ok1", Hidden = True, Width = 35, Height = 37})
-	DisplayBrush(12, 240, 330, {Name = "ok2", Width = 35, Height = 37})
-	DisplayBrush(9, 330, 330, {Name = "no1", Hidden = True, Width = 35, Height = 37})
-	DisplayBrush(10, 330, 330, {Name = "no2", Width = 35, Height = 37})
+	DisplayBrush(11, 240, 330, {Name = "ok1", Hidden = True})
+	DisplayBrush(12, 240, 330, {Name = "ok2"})
+	DisplayBrush(9, 330, 330, {Name = "no1", Hidden = True})
+	DisplayBrush(10, 330, 330, {Name = "no2"})
 	button6 = MakeButton(Nil, #SIMPLEBUTTON, 240, 330, 35, 37, evttable)
 	button7 = MakeButton(Nil, #SIMPLEBUTTON, 330, 330, 35, 37, evttable)
 EndFunction

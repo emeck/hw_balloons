@@ -29,22 +29,23 @@
 @SPRITE 4, "sprites/balloon_red.png", {Width = 54, Height= 70, Frames = 2, FPR = 2, LoadAlpha = True}
 
 ;menu button brushes
-@BRUSH 1, "brushes/play1.png", {LoadAlpha = True, SmoothScale = True}
-@BRUSH 2, "brushes/play2.png", {LoadAlpha = True, SmoothScale = True}
-@BRUSH 3, "brushes/player1.png", {LoadAlpha = True, SmoothScale = True}
-@BRUSH 4, "brushes/player2.png", {LoadAlpha = True, SmoothScale = True}
-@BRUSH 5, "brushes/scores1.png", {LoadAlpha = True, SmoothScale = True}
-@BRUSH 6, "brushes/scores2.png", {LoadAlpha = True, SmoothScale = True}
-@BRUSH 7, "brushes/exit1.png", {LoadAlpha = True, SmoothScale = True}
-@BRUSH 8, "brushes/exit2.png", {LoadAlpha = True, SmoothScale = True}
-@BRUSH 9, "brushes/close1.png", {LoadAlpha = True, SmoothScale = True}
-@BRUSH 10, "brushes/close2.png", {LoadAlpha = True, SmoothScale = True}
-@BRUSH 11, "brushes/ok1.png", {LoadAlpha = True, SmoothScale = True}
-@BRUSH 12, "brushes/ok2.png", {LoadAlpha = True, SmoothScale = True}
-@BRUSH 13, "brushes/medal1.png", {LoadAlpha = True, SmoothScale = True}
-@BRUSH 14, "brushes/medal2.png", {LoadAlpha = True, SmoothScale = True}
-@BRUSH 15, "brushes/medal3.png", {LoadAlpha = True, SmoothScale = True}
-@BRUSH 16, "brushes/medal4.png", {LoadAlpha = True, SmoothScale = True}
+@BRUSH 1, "brushes/play1.png", {LoadAlpha = True}
+@BRUSH 2, "brushes/play2.png", {LoadAlpha = True}
+@BRUSH 3, "brushes/player1.png", {LoadAlpha = True}
+@BRUSH 4, "brushes/player2.png", {LoadAlpha = True}
+@BRUSH 5, "brushes/scores1.png", {LoadAlpha = True}
+@BRUSH 6, "brushes/scores2.png", {LoadAlpha = True}
+@BRUSH 7, "brushes/exit1.png", {LoadAlpha = True}
+@BRUSH 8, "brushes/exit2.png", {LoadAlpha = True}
+@BRUSH 9, "brushes/close1.png", {LoadAlpha = True}
+@BRUSH 10, "brushes/close2.png", {LoadAlpha = True}
+@BRUSH 11, "brushes/ok1.png", {LoadAlpha = True}
+@BRUSH 12, "brushes/ok2.png", {LoadAlpha = True}
+@BRUSH 13, "brushes/medal1.png", {LoadAlpha = True}
+@BRUSH 14, "brushes/medal2.png", {LoadAlpha = True}
+@BRUSH 15, "brushes/medal3.png", {LoadAlpha = True}
+@BRUSH 16, "brushes/medal4.png", {LoadAlpha = True}
+@BRUSH 17, "brushes/pointer.png", {LoadAlpha = True}
 
 ;game samples
 @SAMPLE 1, "sounds/menu.8svx"
@@ -182,6 +183,7 @@ Function p_Play()
 	CreateDisplay(2, {BGPic = 2, Active = True, Title = "Balloons"})	;create and open game display
 	OpenDisplay(2)
 	DisableLayers()						;game display uses sprites so no layers
+	
     done = False						;game is not over
 
 	If (player.name = "")				;if no player name yet...
@@ -198,7 +200,8 @@ Function p_Play()
     SetFontStyle(#ANTIALIAS)
 	SetFontColor(#WHITE)
 
-    ;DisplayTransitionFX(2, {Type = #FADE, Speed = 50, Parameter = #WHITE})	;display background with a transition fx
+    crosshair = CreatePointer(Nil, #BRUSH, 17, #CENTER, #CENTER)
+	SetPointer(crosshair)
 
     Box(0, 0, 640, 25, #GRAY, {Transparency = "50%"})          ;score and time area
 
@@ -235,9 +238,9 @@ Function p_Start()
 	button1Tag$ = CreateTextObject(Nil, catalog$[0], {Encoding=utf8})					;create button text from catalog
 	bt1_tag = ConvertToBrush(#TEXTOBJECT, button1Tag$, Nil)								;convert text to brush
 	FreeTextObject(button1Tag$)															;textobject no longer needed
-	DisplayBrush(1, 235, 170, {Width = 35, Height = 37, Name = "play1", Hidden = True})
-	DisplayBrush(2, 235, 170, {Width = 35, Height = 37, Name = "play2"})								;display button image using center as anchor
-	DisplayBrush(bt1_tag, 280, 172)														;display text image using center as anchor
+	DisplayBrush(1, 235, 170, {Name = "play1", Hidden = True})							;display button image when mouse over
+	DisplayBrush(2, 235, 170, {Name = "play2"})											;display button image
+	DisplayBrush(bt1_tag, 280, 172)														;display text image
 	bwidth = GetAttribute(#BRUSH, bt1_tag, #ATTRWIDTH)
 	button1 = MakeButton(Nil, #SIMPLEBUTTON, 235, 172, 45 + bwidth, 35, evttable)			;create clickable area
 
@@ -245,8 +248,8 @@ Function p_Start()
 	button2Tag$ = CreateTextObject(Nil, catalog$[1], {Encoding=utf8})
 	bt2_tag = ConvertToBrush(#TEXTOBJECT, button2Tag$, Nil)
 	FreeTextObject(button2Tag$)
-	DisplayBrush(3, 235, 235, {Width = 35, Height = 37, Name = "player1", Hidden = True})
-	DisplayBrush(4, 235, 235, {Width = 35, Height = 37, Name = "player2"})
+	DisplayBrush(3, 235, 235, {Name = "player1", Hidden = True})
+	DisplayBrush(4, 235, 235, {Name = "player2"})
 	DisplayBrush(bt2_tag, 280, 237)
 	bwidth = GetAttribute(#BRUSH, bt2_tag, #ATTRWIDTH)
 	button2 = MakeButton(Nil, #SIMPLEBUTTON, 235, 237, 45 + bwidth, 35, evttable)
@@ -255,8 +258,8 @@ Function p_Start()
 	button3Tag$ = CreateTextObject(Nil, catalog$[2], {Encoding=utf8})
 	bt3_tag = ConvertToBrush(#TEXTOBJECT, button3Tag$, Nil)
 	FreeTextObject(button3Tag$)
-	DisplayBrush(5, 235, 300, {Width = 35, Height = 37, Name = "scores1", Hidden = True})
-	DisplayBrush(6, 235, 300, {Width = 35, Height = 37, Name = "scores2"})
+	DisplayBrush(5, 235, 300, {Name = "scores1", Hidden = True})
+	DisplayBrush(6, 235, 300, {Name = "scores2"})
 	DisplayBrush(bt3_tag, 280, 302)
 	bwidth = GetAttribute(#BRUSH, bt3_tag, #ATTRWIDTH)
 	button3 = MakeButton(Nil, #SIMPLEBUTTON, 235, 302, 45 + bwidth, 35, evttable)
@@ -265,8 +268,8 @@ Function p_Start()
 	button4Tag$ = CreateTextObject(Nil, catalog$[3], {Encoding=utf8})
 	bt4_tag = ConvertToBrush(#TEXTOBJECT, button4Tag$, Nil)
 	FreeTextObject(button4Tag$)
-	DisplayBrush(7, 580, 430, {Width = 35, Height = 37, Name = "exit1", Hidden = True})
-	DisplayBrush(8, 580, 430, {Width = 35, Height = 37, Name = "exit2"})
+	DisplayBrush(7, 580, 430, {Name = "exit1", Hidden = True})
+	DisplayBrush(8, 580, 430, {Name = "exit2"})
 	bwidth = GetAttribute(#BRUSH, bt4_tag, #ATTRWIDTH)
 	DisplayBrush(bt4_tag, 575 - bwidth, 432)
 	button4 = MakeButton(Nil, #SIMPLEBUTTON, 575 - bwidth, 432, 40 + bwidth, 35, evttable)
