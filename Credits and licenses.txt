@@ -20,15 +20,12 @@ Button images
 
 Crosshair image
 ===============
-Creted by pasmateRs
+pointer.png created by pasmateRs
 Downloaded from opengameart.org
 
 Sounds
 ======
-The file pop.8svx was converted and modified by
-Enrique Mecklenburg Serkovic.
-
-Original wav file by Gniffelbaf.
+pop.wav by Gniffelbaf.
 Licensed under CC0 1.0 Universal
 Downloaded from freesound.org/s/82109/
 

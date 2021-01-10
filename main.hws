@@ -1,6 +1,6 @@
 @APPTITLE "Balloons"
 @APPAUTHOR "Enrique Mecklenburg Serkovic"
-@APPVERSION "$VER: Balloons 1.8 (07-Jan-21)"
+@APPVERSION "$VER: Balloons 1.9 (10-Jan-21)"
 @APPDESCRIPTION "Scratch example written in Hollywood"
 @APPICON {Ic16x16 = "icons/icon16x16.png",
 		  Ic16x16s = "icons/icon16x16.png",
@@ -48,12 +48,12 @@
 @BRUSH 17, "brushes/pointer.png", {LoadAlpha = True}
 
 ;game samples
-@SAMPLE 1, "sounds/menu.8svx"
-@SAMPLE 2, "sounds/button.8svx"
-@SAMPLE 3, "sounds/pop.8svx"
-@SAMPLE 4, "sounds/quit.8svx"
-@SAMPLE 5, "sounds/win.8svx"
-@SAMPLE 6, "sounds/lose.8svx"
+@SAMPLE 1, "sounds/intro.wav"
+@SAMPLE 2, "sounds/click.wav"
+@SAMPLE 3, "sounds/pop.wav"
+@SAMPLE 4, "sounds/win.wav"
+@SAMPLE 5, "sounds/winhigh.wav"
+@SAMPLE 6, "sounds/over.8svx"
 
 ;include other source files
 @INCLUDE "play.hws"				;game functions
@@ -100,7 +100,7 @@ EndFunction
 ******************************************/
 Function p_Buttons(msg)
 	Switch msg.action
-	Case "OnMouseOver"
+	Case "OnMouseOver"						;change button image to colored one when mouse over button
 		If msg.id = button1
 			HideLayer("play2")
 			ShowLayer("play1")
@@ -123,7 +123,7 @@ Function p_Buttons(msg)
 			HideLayer("no2")
 			ShowLayer("no1")
 		EndIf
-	Case "OnMouseOut"
+	Case "OnMouseOut"						;button image grayed when mouse not over button
 		If msg.id = button1
 			HideLayer("play1")
 			ShowLayer("play2")
@@ -158,19 +158,21 @@ Function p_Buttons(msg)
 			PlaySample(2)
 			p_ShowScores()
 		ElseIf msg.id = button4				;quit program
-			PlaySample(4)
+			PlaySample(2)
 			Wait(25)
 			End()
 		ElseIf msg.id = button5				;close scores list
+			PlaySample(2)
 			SelectDisplay(1)
 			FreeDisplay(3)
 		ElseIf msg.id = button6				;"yes" to play again
+			PlaySample(2)
 			p_CleanUp()
 	        p_Play()
 		ElseIf msg.id = button7				;"no" to play again
+			PlaySample(2)
 			p_CleanUp()
 			OpenDisplay(1)
-			;p_Start()
 		EndIf
 	EndSwitch
 EndFunction
@@ -180,26 +182,24 @@ EndFunction
  * Game function *
  *****************/
 Function p_Play()
-	CreateDisplay(2, {BGPic = 2, Active = True, Title = "Balloons"})	;create and open game display
+	;create and open game display
+	CreateDisplay(2, {BGPic = 2, Active = True, Title = "Balloons"})
 	OpenDisplay(2)
 	DisableLayers()						;game display uses sprites so no layers
 	
     done = False						;game is not over
 
-	If (player.name = "")				;if no player name yet...
+	If (player.name = "")				;if player name not set...
 		p_SetName()
 	EndIf
 	
 	player.time = 0						;reset time from last game played
 	player.date = ""					;reset date from last game played
 	
+	;check for events during game
 	InstallEventHandler({OnMouseDown = p_EventFunction, OnKeyDown = p_EventFunction})
 
-    SetFont(#SANS, 18, {Engine = #FONTENGINE_INBUILT})
-    SetFontStyle(#BOLD)
-    SetFontStyle(#ANTIALIAS)
-	SetFontColor(#WHITE)
-
+	;change pointer arrow to crosshair
     crosshair = CreatePointer(Nil, #BRUSH, 17, #CENTER, #CENTER)
 	SetPointer(crosshair)
 

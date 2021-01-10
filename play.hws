@@ -3,7 +3,7 @@
  *******************/
 Function p_CreateBalloons()
     For Local i = 1 To balloons
-        balloon[i] = balloon:new()                  ;create new balloon object
+        balloon[i] = balloon:new()			;create new balloon object
     Next
 EndFunction
 
@@ -14,7 +14,7 @@ EndFunction
 Function p_MoveBalloons()
     BeginRefresh()
     For Local i = 1 To balloons
-        balloon[i]:move()                                               ;move balloon object
+        balloon[i]:move()					;move balloon object
     Next
     EndRefresh()
 EndFunction
@@ -46,6 +46,11 @@ EndFunction
  * Create scores and display starting score *
  ********************************************/
 Function p_CreateScore()
+	SetFont(#SANS, 18, {Engine = #FONTENGINE_INBUILT})
+    SetFontStyle(#BOLD)
+    SetFontStyle(#ANTIALIAS)
+	SetFontColor(#WHITE)
+
     scoreText = CreateTextObject(Nil, catalog$[10])						;create "Score" text
 
     For Local i = 0 To balloons
@@ -63,6 +68,11 @@ EndFunction
  * Create time sprite *
  **********************/
 Function p_CreateCountdown()
+	SetFont(#SANS, 18, {Engine = #FONTENGINE_INBUILT})
+    SetFontStyle(#BOLD)
+    SetFontStyle(#ANTIALIAS)
+	SetFontColor(#WHITE)
+
     timeText = CreateTextObject(Nil, catalog$[4]..": ")					;create "Time" text
 
     For Local i = 0 To time
@@ -113,15 +123,17 @@ Function p_GameOver(endText$)
     done = True             ;game is over
 
     RemoveSprites(True)     ;remove sprites but keep graphics displayed so box can be draw on top
-	
+
+	;create and open display when game is over
 	CreateDisplay(4, {Width = 610, Height = 430, Color = #GRAY, NoClose = True, Active = True, Title = ""})
 	OpenDisplay(4)
-	EnableLayers()
+	EnableLayers()			;to be able to show/hide button's layers (button colored or grayed)
     
     SetFont(#SANS, 36, {Engine = #FONTENGINE_INBUILT})
     SetFontStyle(#BOLD)
     SetFontStyle(#ANTIALIAS)
 
+	;select message to show if player lost, won or made a high score
     If endText$ = "lose"
 		PlaySample(6)
 	    TextOut(#CENTER, #CENTER, catalog$[13])
@@ -133,13 +145,13 @@ Function p_GameOver(endText$)
 		DisplayBrush(16, #CENTER + 75, #CENTER - 100, {AnchorX = 0.5, AnchorY = 0.5})
 	    TextOut(#CENTER, #CENTER - 50, catalog$[16])
     Else
-		PlaySample(5)
+		PlaySample(4)
 		DisplayBrush(15, #CENTER, #CENTER - 50, {AnchorX = 0.5, AnchorY = 0.5})
 	    TextOut(#CENTER, #CENTER, catalog$[14])
     EndIf
 
     Wait(100)
-    TextOut(#CENTER, 260, catalog$[15])
+    TextOut(#CENTER, 260, catalog$[15])			;ask if player wants to play again
 	
 	;create and display Yes/No buttons for playing again
 	DisplayBrush(11, 240, 330, {Name = "ok1", Hidden = True})
@@ -175,7 +187,7 @@ Function p_CleanUp()
 	
     player.score = 0						;clear last score
 	
-	SelectDisplay(1)
-	FreeDisplay(4)
-	FreeDisplay(2)
+	SelectDisplay(1)						;select menu display
+	FreeDisplay(4)							;destroy game over display
+	FreeDisplay(2)							;destroy game display
 EndFunction

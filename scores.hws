@@ -34,11 +34,10 @@ EndFunction
 Function p_CompareTimes()
 	For Local i = 0 To 9
 		If player.time < highscores[i].time
-			InsertItem(highscores, {name = player.name,
-									time = player.time,
-									date = GetDate()}, i)	;insert item in position "i"
-			RemoveItem(highscores)							;remove last item to keep 10 highscore in total
-			p_WriteScores()
+			;insert item in position "i"
+			InsertItem(highscores, {name = player.name,	time = player.time,	date = GetDate()}, i)
+			RemoveItem(highscores)				;remove last item to keep 10 highscore in total
+			p_WriteScores()						;write new highscores table to file
 			Return("high")
 		EndIf
 	Next
@@ -50,16 +49,17 @@ EndFunction
 * Show highscores table *
 *************************/
 Function p_ShowScores()
-	Local Col_A, Col_B, Col_C = 50, 250, 400
-	Local Row = 15
-	CreateDisplay(3, {Width = 610, Height = 430, Color = #GRAY, NoClose = True, Active = True, Title = catalog$[8]})
+	Local Col_A, Col_B, Col_C = 50, 250, 400	;set columns offset
+	Local Row = 15								;set title line offset
 
 	SetFont(#SANS, 30, {Engine = #FONTENGINE_INBUILT})
     SetFontStyle(#BOLD)
     SetFontStyle(#ANTIALIAS)
 
+	;create and open display for high scores
+	CreateDisplay(3, {Width = 610, Height = 430, Color = #GRAY, NoClose = True, Active = True, Title = catalog$[8]})
 	OpenDisplay(3)
-	EnableLayers()
+	EnableLayers()		;to be able to show/hide button's layers (button colored or grayed)
 	
 	;create and display close button
 	button5Tag$ = CreateTextObject(Nil, catalog$[9], {Encoding=utf8})
@@ -72,15 +72,18 @@ Function p_ShowScores()
 	button5 = MakeButton(Nil, #SIMPLEBUTTON, 545 - bwidth, 382, 40 + bwidth, 35, evttable)
 
 	SetFontColor(#BLACK)
+	;print column titles
 	TextOut(Col_A, Row, catalog$[1])
 	TextOut(Col_B, Row, catalog$[4])
 	TextOut(Col_C, Row, catalog$[5])
-	Row = 20
 	
 	SetFontColor(#WHITE)
 	SetFontStyle(#NORMAL)
 	SetFontStyle(#ANTIALIAS)
+
+	Row = 25					;leave some space after column titles
 	
+	;print highscores
 	For Local i = 0 To 9
 		Row = Row + 30
 		TextOut(Col_A, Row, highscores[i].name)
