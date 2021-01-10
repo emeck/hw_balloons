@@ -1,0 +1,74 @@
+Balloon images
+===============
+balloon_black.png
+balloon_blue.png
+balloon_green.png
+balloon_red.png
+Original images by Kerri Coombs, Living Midnight Design.
+Licensed under CC-BY-SA 3.0
+Downloaded from https://opengameart.org/content/sprites-from-porcupop
+Modified (addition of 2nd frame) and resized by Enrique Mecklenburg Serkovic
+
+Background images
+=================
+background.png by © 2012-2013 Julien Jorge <julien.jorge@stuff-o-matic.com>
+Licensed under CC-BY-SA 3.0
+Downloaded from https://opengameart.org/content/large-nature-background
+
+Button images
+=============
+close1.png
+close2.png
+exit1.png
+exit2.png
+medal1.png
+medal2.png
+medal3.png
+medal4.png
+ok1.png
+ok2.png
+play1.png
+play2.png
+player1.png
+player2.png
+scores1.png
+scores2.png
+
+Extracted from "Button.svg" by pzUH
+Licensed under CCC0 1.0 Universal
+Downloaded from https://opengameart.org/content/casual-game-button-pack
+
+Crosshair image
+===============
+pointer.png
+Extracted from "64 crosshairs pack" by para
+Licensed under CCC0 1.0 Universal
+Downloaded from https://opengameart.org/content/64-crosshairs-pack
+
+Sounds
+======
+click.wav (original name "collec.ogg") by Christian DeTamble - http://therefactory.bplaced.net
+Licensed under CCC-BY 3.0
+Downloaded from https://opengameart.org/content/8-bit-retro-sfx
+Converted to WAV by Enrique Mecklenburg Serkovic
+
+intro.wav (original name "GameOver.wav") by Aszura
+Licensed under CCC0 1.0 Universal
+Downloaded from https://opengameart.org/content/game-over-8-bit-style
+
+over.8svx (original name "GameOver.wav") by den_yes
+Licensed under  CC0 1.0 Universal
+Downloaded from https://opengameart.org/content/game-over-soundold-school
+Converted to 8svx by Enrique Mecklenburg Serkovic
+
+pop.wav (original name "Balloon-Burst-01.wav") by Gniffelbaf
+Licensed under CC0 1.0 Universal
+Downloaded from freesound.org/s/82109/
+
+win.wav  (original name "Win sound.wav") by Listener
+Licensed under  CC0 1.0 Universal
+Downloaded from https://opengameart.org/content/win-sound-effect
+
+winhigh.wav (original name "winsquare.ogg") by Fupi
+Licensed under  CC0 1.0 Universal
+Downloaded from https://opengameart.org/content/win-jingle
