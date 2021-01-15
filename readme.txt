@@ -1,8 +1,9 @@
-Name:         Balloons
-Uploader:     jpv@morphos-user.com (jPV^RNO)
-Author:       Enrique Mecklenburg Serkovic
-Type:         Game
-Version:      1.9
+Name:        Balloons
+Type:        Game
+Version:     1.9
+Author:      Enrique Mecklenburg Serkovic
+email:       enrique_mecklenburg@yahoo.com
+
 
 ABOUT
 -----
