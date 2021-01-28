@@ -46,10 +46,7 @@ EndFunction
  * Create scores and display starting score *
  ********************************************/
 Function p_CreateScore()
-	SetFont(#SANS, 18, {Engine = #FONTENGINE_INBUILT})
-    SetFontStyle(#BOLD)
-    SetFontStyle(#ANTIALIAS)
-	SetFontColor(#WHITE)
+	p_setFontGame()
 
     scoreText = CreateTextObject(Nil, catalog$[10])						;create "Score" text
 
@@ -68,10 +65,7 @@ EndFunction
  * Create time sprite *
  **********************/
 Function p_CreateCountdown()
-	SetFont(#SANS, 18, {Engine = #FONTENGINE_INBUILT})
-    SetFontStyle(#BOLD)
-    SetFontStyle(#ANTIALIAS)
-	SetFontColor(#WHITE)
+	p_setFontGame()
 
     timeText = CreateTextObject(Nil, catalog$[4]..": ")					;create "Time" text
 
@@ -128,10 +122,6 @@ Function p_GameOver(endText$)
 	CreateDisplay(4, {Width = 610, Height = 430, Color = #GRAY, NoClose = True, Active = True, Title = ""})
 	OpenDisplay(4)
 	EnableLayers()			;to be able to show/hide button's layers (button colored or grayed)
-    
-    SetFont(#SANS, 36, {Engine = #FONTENGINE_INBUILT})
-    SetFontStyle(#BOLD)
-    SetFontStyle(#ANTIALIAS)
 
 	;select message to show if player lost, won or made a high score
     If endText$ = "lose"

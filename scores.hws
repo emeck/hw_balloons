@@ -18,7 +18,7 @@ Function p_OpenScores()
 		Local date$ = GetDate()								;get system date
 		
 		For Local i = 0 To 9								;insert 10 highscores
-			InsertItem(highscores, {name = "Enrique", time = 9.999, date = date$})
+			InsertItem(highscores, {name = "---", time = 11.000, date = "---"})
 		Next
 
 		OpenFile(1, "highscores.bin", #MODE_WRITE)			;create and open file
@@ -52,10 +52,6 @@ Function p_ShowScores()
 	Local Col_A, Col_B, Col_C = 50, 250, 400	;set columns offset
 	Local Row = 15								;set title line offset
 
-	SetFont(#SANS, 30, {Engine = #FONTENGINE_INBUILT})
-    SetFontStyle(#BOLD)
-    SetFontStyle(#ANTIALIAS)
-
 	;create and open display for high scores
 	CreateDisplay(3, {Width = 610, Height = 430, Color = #GRAY, NoClose = True, Active = True, Title = catalog$[8]})
 	OpenDisplay(3)
@@ -71,18 +67,15 @@ Function p_ShowScores()
 	DisplayBrush(bt5_tag, 545 - bwidth, 382)
 	button5 = MakeButton(Nil, #SIMPLEBUTTON, 545 - bwidth, 382, 40 + bwidth, 35, evttable)
 
-	SetFontColor(#BLACK)
+	p_setFontHighScoresTitle()
 	;print column titles
 	TextOut(Col_A, Row, catalog$[1])
 	TextOut(Col_B, Row, catalog$[4])
 	TextOut(Col_C, Row, catalog$[5])
-	
-	SetFontColor(#WHITE)
-	SetFontStyle(#NORMAL)
-	SetFontStyle(#ANTIALIAS)
 
 	Row = 25					;leave some space after column titles
-	
+
+	p_setFontHighScores()
 	;print highscores
 	For Local i = 0 To 9
 		Row = Row + 30

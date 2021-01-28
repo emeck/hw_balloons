@@ -60,6 +60,7 @@
 @INCLUDE "balloon.hws"			;balloon object functions
 @INCLUDE "language.hws"			;catalog function
 @INCLUDE "scores.hws"			;highscores functions
+@INCLUDE "fonts.hws"			;font format functions
 
 EscapeQuit(True)
 
@@ -222,10 +223,8 @@ EndFunction
 **************/
 Function p_Start()
 	EnableLayers()
-    SetFont(#SANS, 30, {Engine = #FONTENGINE_INBUILT})
-    SetFontStyle(#BOLD)
-    SetFontStyle(#ANTIALIAS)
-	SetFillStyle(#FILLCOLOR)
+
+	p_setFontMenu()
 
 	;events for start menu buttons
 	evttable = {OnMouseUp = p_Buttons, OnMouseOver = p_Buttons, OnMouseOut = p_Buttons}

@@ -1,0 +1,33 @@
+Function p_setFontMenu()
+    SetFont(#SANS, 30, {Engine = #FONTENGINE_INBUILT})
+    SetFontStyle(#BOLD)
+    SetFontStyle(#ANTIALIAS)
+;	SetFillStyle(#FILLCOLOR)
+EndFunction
+
+function p_setFontGame()
+	SetFont(#SANS, 18, {Engine = #FONTENGINE_INBUILT})
+    SetFontStyle(#BOLD)
+    SetFontStyle(#ANTIALIAS)
+	SetFontColor(#WHITE)
+EndFunction
+
+Function p_setFontGameOver()
+    SetFont(#SANS, 36, {Engine = #FONTENGINE_INBUILT})
+    SetFontStyle(#BOLD)
+    SetFontStyle(#ANTIALIAS)
+EndFunction
+
+Function p_setFontHighScoresTitle()
+	SetFont(#SANS, 30, {Engine = #FONTENGINE_INBUILT})
+    SetFontStyle(#BOLD)
+    SetFontStyle(#ANTIALIAS)
+	SetFontColor(#BLACK)
+EndFunction
+
+Function p_setFontHighScores()
+	SetFont(#SANS, 30, {Engine = #FONTENGINE_INBUILT})
+	SetFontStyle(#NORMAL)
+	SetFontStyle(#ANTIALIAS)
+	SetFontColor(#WHITE)
+EndFunction
