@@ -1,6 +1,6 @@
 @APPTITLE "Balloons"
 @APPAUTHOR "Enrique Mecklenburg Serkovic"
-@APPVERSION "$VER: Balloons 1.9 (10-Jan-21)"
+@APPVERSION "$VER: Balloons 1.9 (30-Jan-21)"
 @APPDESCRIPTION "Scratch example written in Hollywood"
 @APPICON {Ic16x16 = "icons/icon16x16.png",
 		  Ic16x16s = "icons/icon16x16.png",
@@ -18,9 +18,11 @@
 *  them before time ends.        *
 *********************************/
 
-@DISPLAY 1, {Width = 640, Height = 480, Color = #GRAY, Title = "Balloons"}
-
+@BGPIC 1, "backgrounds/menu.png"
 @BGPIC 2, "backgrounds/background.png"
+@BGPIC 3, "backgrounds/scores.png"
+
+@DISPLAY 1, {BGPic = 1, Color = #GRAY, Title = "Balloons"}
 
 ;balloon sprites, each with 2 frames, one with the balloon image and one with the popped image
 @SPRITE 1, "sprites/balloon_blue.png", {Width = 54, Height= 70, Frames = 2, FPR = 2, LoadAlpha = True}
@@ -190,7 +192,7 @@ Function p_Menu()
 	;events for start menu buttons
 	evttable = {OnMouseUp = p_Buttons, OnMouseOver = p_Buttons, OnMouseOut = p_Buttons}
 
-	DisplayTransitionFX(1, {Type = #FADE, Speed = 50, Parameter = #WHITE})	;display background with a transition fx
+	;DisplayTransitionFX(1, {Type = #FADE, Speed = 50, Parameter = #WHITE})	;display background with a transition fx
 
 	PlaySample(1)		;play menu sample
 

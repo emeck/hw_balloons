@@ -53,7 +53,8 @@ Function p_ShowScores()
 	Local Row = 15								;set title line offset
 
 	;create and open display for high scores
-	CreateDisplay(3, {Width = 610, Height = 430, Color = #GRAY, NoClose = True, Active = True, Title = catalog$[8]})
+	;CreateDisplay(3, {Width = 610, Height = 430, Color = #GRAY, NoClose = True, Active = True, Title = catalog$[8]})
+	CreateDisplay(3, {BGPic = 3, NoClose = True, Active = True, Title = catalog$[8]})
 	OpenDisplay(3)
 	EnableLayers()		;to be able to show/hide button's layers (button colored or grayed)
 	
