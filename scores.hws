@@ -58,6 +58,7 @@ Function p_ShowScores()
 	EnableLayers()		;to be able to show/hide button's layers (button colored or grayed)
 	
 	;create and display close button
+	p_setFontButtons()
 	button5Tag$ = CreateTextObject(Nil, catalog$[9], {Encoding=utf8})
 	bt5_tag = ConvertToBrush(#TEXTOBJECT, button5Tag$, Nil)
 	FreeTextObject(button5Tag$)

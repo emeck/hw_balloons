@@ -69,7 +69,7 @@ SetFillStyle(#FILLCOLOR)
 
 player = {name = "", score = 0, time = 0, date = ""}	;player's data
 balloons = 15											;total ballons on screen
-time = 10												;total time in seconds
+time = 30												;total time in seconds
 countdown = {}											;table for storing time numbers
 scores = {}												;table for storing score numbers
 highscores = {}											;highscores table
@@ -179,52 +179,13 @@ Function p_Buttons(msg)
 EndFunction
 
 
-/*****************
- * Game function *
- *****************/
-Function p_Play()
-	;create and open game display
-	CreateDisplay(2, {BGPic = 2, Active = True, Title = "Balloons"})
-	OpenDisplay(2)
-	DisableLayers()						;game display uses sprites so no layers
-	
-    done = False						;game is not over
-
-	If (player.name = "")				;if player name not set...
-		p_SetName()
-	EndIf
-	
-	player.time = 0						;reset time from last game played
-	player.date = ""					;reset date from last game played
-	
-	;check for events during game
-	InstallEventHandler({OnMouseDown = p_EventFunction, OnKeyDown = p_EventFunction})
-
-	;change pointer arrow to crosshair
-    crosshair = CreatePointer(Nil, #BRUSH, 17, #CENTER, #CENTER)
-	SetPointer(crosshair)
-
-    Box(0, 0, 640, 25, #GRAY, {Transparency = "50%"})          ;score and time area
-
-    p_CreateScore()                                            ;set starting score
-    p_CreateCountdown()                                        ;set remaining time
-    Wait(25)
-    p_CreateBalloons()                                         ;create and show balloons
-
-    StartTimer(1)                                              ;start timer
-
-    SetInterval(1, p_Countdown, 1000)                          ;execute timecountdown loop, 1 second interval
-    SetInterval(2, p_MoveBalloons, 1000/25)                    ;execute main loop at 25fps
-EndFunction
-
-
 /*************
 * Start menu *
 **************/
-Function p_Start()
+Function p_Menu()
 	EnableLayers()
 
-	p_setFontMenu()
+	p_setFontButtons()
 
 	;events for start menu buttons
 	evttable = {OnMouseUp = p_Buttons, OnMouseOver = p_Buttons, OnMouseOut = p_Buttons}
@@ -275,9 +236,51 @@ Function p_Start()
 EndFunction
 
 
+/*****************
+ * Game function *
+ *****************/
+Function p_Play()
+	;create and open game display
+	CreateDisplay(2, {BGPic = 2, Active = True, Title = "Balloons"})
+	OpenDisplay(2)
+	DisableLayers()						;game display uses sprites so no layers
+	
+    done = False						;game is not over
+
+	If (player.name = "")				;if player name not set...
+		p_SetName()
+	EndIf
+	
+	ActivateDisplay(2)					;so it's not hidden by the folder window in Windows
+	
+	player.time = 0						;reset time from last game played
+	player.date = ""					;reset date from last game played
+	
+	;check for events during game
+	InstallEventHandler({OnMouseDown = p_EventFunction, OnKeyDown = p_EventFunction})
+
+	;change pointer arrow to crosshair
+    crosshair = CreatePointer(Nil, #BRUSH, 17, #CENTER, #CENTER)
+	SetPointer(crosshair)
+
+    Box(0, 0, 640, 25, #GRAY, {Transparency = "50%"})          ;score and time area
+
+    p_CreateScore()                                            ;set starting score
+    p_CreateCountdown()                                        ;set remaining time
+    Wait(25)
+    p_CreateBalloons()                                         ;create and show balloons
+
+    StartTimer(1)                                              ;start timer
+	
+    SetInterval(1, p_Countdown, 1000)                          ;execute timecountdown loop, 1 second interval
+    SetInterval(2, p_MoveBalloons, 1000/25)                    ;execute main loop at 25fps
+EndFunction
+
+
 p_ReadCatalog()			;read locale catalog
 p_OpenScores()			;read highscores
-p_Start()				;start game
+p_Menu()				;start game
+
 
 Repeat
     WaitEvent()

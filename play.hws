@@ -123,6 +123,7 @@ Function p_GameOver(endText$)
 	OpenDisplay(4)
 	EnableLayers()			;to be able to show/hide button's layers (button colored or grayed)
 
+	p_setFontGameOver()
 	;select message to show if player lost, won or made a high score
     If endText$ = "lose"
 		PlaySample(6)

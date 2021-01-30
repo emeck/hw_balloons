@@ -1,8 +1,8 @@
-Function p_setFontMenu()
+Function p_setFontButtons()
     SetFont(#SANS, 30, {Engine = #FONTENGINE_INBUILT})
     SetFontStyle(#BOLD)
     SetFontStyle(#ANTIALIAS)
-;	SetFillStyle(#FILLCOLOR)
+	SetFontColor(#WHITE)
 EndFunction
 
 function p_setFontGame()
@@ -13,9 +13,10 @@ function p_setFontGame()
 EndFunction
 
 Function p_setFontGameOver()
-    SetFont(#SANS, 36, {Engine = #FONTENGINE_INBUILT})
-    SetFontStyle(#BOLD)
+    SetFont(#SANS, 26, {Engine = #FONTENGINE_INBUILT})
+    SetFontStyle(#NORMAL)
     SetFontStyle(#ANTIALIAS)
+	SetFontColor(#WHITE)
 EndFunction
 
 Function p_setFontHighScoresTitle()
