@@ -1,6 +1,6 @@
 @APPTITLE "Balloons"
 @APPAUTHOR "Enrique Mecklenburg Serkovic"
-@APPVERSION "$VER: Balloons 1.9 (30-Jan-21)"
+@APPVERSION "$VER: Balloons 2.0 (31-Jan-21)"
 @APPDESCRIPTION "Scratch example written in Hollywood"
 @APPICON {Ic16x16 = "icons/icon16x16.png",
 		  Ic16x16s = "icons/icon16x16.png",
@@ -75,9 +75,13 @@ time = 30												;total time in seconds
 countdown = {}											;table for storing time numbers
 scores = {}												;table for storing score numbers
 highscores = {}											;highscores table
-done = True												;is game over?
+done = True												;game is over
+menuOn = True											;menu is visible
 catalog$ = {}											;catalog table
 
+;this 2 depends on locale string size
+scoreLabelX = 0											;x coordinate for "Score" label during play
+timeLabelX  = 0											;x coordinate for "Time" label during play
 
 /*******************************************
  * Mouse and keyboard events while playing *
@@ -103,20 +107,20 @@ EndFunction
 ******************************************/
 Function p_Buttons(msg)
 	Switch msg.action
-	Case "OnMouseOver"						;change button image to colored one when mouse over button
-		If msg.id = button1
+	Case "OnMouseOver"								;change button image to colored one when mouse over button
+		If msg.id = button1 And menuOn = True		;only if Menu is visible
 			HideLayer("play2")
 			ShowLayer("play1")
-		ElseIf msg.id = button2
+		ElseIf msg.id = button2 And menuOn = True
 			HideLayer("player2")
 			ShowLayer("player1")
-		ElseIf msg.id = button3
+		ElseIf msg.id = button3 And menuOn = True
 			HideLayer("scores2")
 			ShowLayer("scores1")
-		ElseIf msg.id = button4
+		ElseIf msg.id = button4 And menuOn = True
 			HideLayer("exit2")
 			ShowLayer("exit1")
-		ElseIf msg.id = button5
+		ElseIf msg.id = button5 And menuOn = False
 			HideLayer("close2")
 			ShowLayer("close1")
 		ElseIf msg.id = button6
@@ -127,19 +131,19 @@ Function p_Buttons(msg)
 			ShowLayer("no1")
 		EndIf
 	Case "OnMouseOut"						;button image grayed when mouse not over button
-		If msg.id = button1
+		If msg.id = button1 And menuOn = True
 			HideLayer("play1")
 			ShowLayer("play2")
-		ElseIf msg.id = button2
+		ElseIf msg.id = button2 And menuOn = True
 			HideLayer("player1")
 			ShowLayer("player2")
-		ElseIf msg.id = button3
+		ElseIf msg.id = button3 And menuOn = True
 			HideLayer("scores1")
 			ShowLayer("scores2")
-		ElseIf msg.id = button4
+		ElseIf msg.id = button4 And menuOn = True
 			HideLayer("exit1")
 			ShowLayer("exit2")
-		ElseIf msg.id = button5
+		ElseIf msg.id = button5 And menuOn = False
 			HideLayer("close1")
 			ShowLayer("close2")
 		ElseIf msg.id = button6
@@ -166,8 +170,7 @@ Function p_Buttons(msg)
 			End()
 		ElseIf msg.id = button5				;close scores list
 			PlaySample(2)
-			SelectDisplay(1)
-			FreeDisplay(3)
+			p_CloseScores()
 		ElseIf msg.id = button6				;"yes" to play again
 			PlaySample(2)
 			p_CleanUp()
@@ -191,8 +194,6 @@ Function p_Menu()
 
 	;events for start menu buttons
 	evttable = {OnMouseUp = p_Buttons, OnMouseOver = p_Buttons, OnMouseOut = p_Buttons}
-
-	;DisplayTransitionFX(1, {Type = #FADE, Speed = 50, Parameter = #WHITE})	;display background with a transition fx
 
 	PlaySample(1)		;play menu sample
 
@@ -242,6 +243,7 @@ EndFunction
  * Game function *
  *****************/
 Function p_Play()
+	menuOn = False
 	;create and open game display
 	CreateDisplay(2, {BGPic = 2, Active = True, Title = "Balloons"})
 	OpenDisplay(2)

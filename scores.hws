@@ -18,7 +18,7 @@ Function p_OpenScores()
 		Local date$ = GetDate()								;get system date
 		
 		For Local i = 0 To 9								;insert 10 highscores
-			InsertItem(highscores, {name = "---", time = 11.000, date = "---"})
+			InsertItem(highscores, {name = "---", time = 30.000, date = "---"})
 		Next
 
 		OpenFile(1, "highscores.bin", #MODE_WRITE)			;create and open file
@@ -49,13 +49,13 @@ EndFunction
 * Show highscores table *
 *************************/
 Function p_ShowScores()
+	menuOn = False								;to deactivate menu buttons effects that caused crash
 	Local Col_A, Col_B, Col_C = 50, 250, 400	;set columns offset
 	Local Row = 15								;set title line offset
 
 	;create and open display for high scores
-	;CreateDisplay(3, {Width = 610, Height = 430, Color = #GRAY, NoClose = True, Active = True, Title = catalog$[8]})
-	CreateDisplay(3, {BGPic = 3, NoClose = True, Active = True, Title = catalog$[8]})
-	OpenDisplay(3)
+	CreateDisplay(3, {BGPic = 3, NoClose = True, Active = True, AlwaysOnTop = True, Title = catalog$[8]})
+	SelectDisplay(3)	;to draw on display 3 while not openned
 	EnableLayers()		;to be able to show/hide button's layers (button colored or grayed)
 	
 	;create and display close button
@@ -65,8 +65,8 @@ Function p_ShowScores()
 	FreeTextObject(button5Tag$)
 	DisplayBrush(9, 550, 380, {Name = "close1", Hidden = True})
 	DisplayBrush(10, 550, 380, {Name = "close2"})
-	bwidth = GetAttribute(#BRUSH, bt5_tag, #ATTRWIDTH)
-	DisplayBrush(bt5_tag, 545 - bwidth, 382)
+	bwidth = GetAttribute(#BRUSH, bt5_tag, #ATTRWIDTH)			;take into account length of string
+	DisplayBrush(bt5_tag, 545 - bwidth, 382)					;to display it accordingly
 	button5 = MakeButton(Nil, #SIMPLEBUTTON, 545 - bwidth, 382, 40 + bwidth, 35, evttable)
 
 	p_setFontHighScoresTitle()
@@ -85,6 +85,18 @@ Function p_ShowScores()
 		TextOut(Col_B, Row, highscores[i].time)
 		TextOut(Col_C, Row, highscores[i].date)
 	Next
+	OpenDisplay(3)
+EndFunction
+
+
+/*************************
+* Close highscores table *
+**************************/
+Function p_CloseScores()
+	RemoveLayers()				;removes the textout from display 3
+	SelectDisplay(1)			;selects display 1 so we can later free display 3
+	menuOn = True
+	FreeDisplay(3)
 EndFunction
 
 

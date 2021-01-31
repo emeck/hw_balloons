@@ -1,6 +1,6 @@
 Name:        Balloons
 Type:        Game
-Version:     1.9
+Version:     2.0
 Author:      Enrique Mecklenburg Serkovic
 email:       enrique_mecklenburg@yahoo.com
 
@@ -8,8 +8,8 @@ email:       enrique_mecklenburg@yahoo.com
 ABOUT
 -----
 
- Balloons is a simple game, the objective is to pop 15 balloons in less
- than 10 seconds. That is all.
+ Balloons is a simple game for small kids, the objective is to pop 15
+ balloons in less than 30 seconds. That is all.
 
  I started it as a way to learn the basics of Hollywood-MAL programming,
  inspired by a tutorial for Scratch 2 which you can find here:
@@ -28,11 +28,21 @@ ABOUT
 
 INSTALLATION
 ------------
- Just unpack the archive wherever you like and launch the program. The
- first time you run it, an empty highscores table will be created.
+ Just unpack the archive wherever you like and launch the program. Linux
+ users need to set the executable bit.The first time you run it, an empty
+ highscores table will be created.
+
+
+TO DO
+-----
+ - Changing fullscreen/window mode from the start menu
+ - SDL version (some day)
+ - Vector graphics (two more weeks?)
 
 
 Special thanks to
 -----------------
  jPV for testing and bug fixing, but mostly for the suggestions and code
- correction!
+ correction.
+
+ Andreas Falkenhahn for developing and enhancing Hollywood.

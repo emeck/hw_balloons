@@ -8,47 +8,14 @@ Function p_CreateBalloons()
 EndFunction
 
 
-/*****************
- * Move balloons *
- *****************/
-Function p_MoveBalloons()
-    BeginRefresh()
-    For Local i = 1 To balloons
-        balloon[i]:move()					;move balloon object
-    Next
-    EndRefresh()
-EndFunction
-
-
-/***************************
- * Check if balloon is hit *
- ***************************/
-Function p_Burst()
-    For Local i = balloons To 1 Step -1							;negative step so click works on balloon "on top" in case of overlapping with other
-        If balloon[i].notPopped
-            If (balloon[i]:pop())								;if balloon was hit
-                RemoveSprite(scores[player.score])				;remove old score
-                player.score = player.score + 1					;uodate score
-	            DisplaySprite(scores[player.score], 70, 5)		;show updated score: shows next frame of scores sprite
-	            If player.score = balloons						;check if all balloons popped
-					player.time = GetTimer(1) / 1000			;get elapsed time
-					Local time$ = p_CompareTimes()				;check if time is in top 10
-		            p_GameOver(time$)							;end game
-	            EndIf
-	            Break											;balloon was popped and game continues, break loop
-            EndIf
-        EndIf
-    Next
-EndFunction
-
-
 /********************************************
  * Create scores and display starting score *
  ********************************************/
 Function p_CreateScore()
 	p_setFontGame()
 
-    scoreText = CreateTextObject(Nil, catalog$[10])						;create "Score" text
+    scoreLabel = CreateTextObject(Nil, catalog$[10])					;create "Score" text
+	scoreLabelX = GetAttribute(#TEXTOBJECT, scoreLabel, #ATTRWIDTH) + 15	;depends on language
 
     For Local i = 0 To balloons
 	    CreateTextObject(1, PadNum(i, 2))                               ;create numbers for score as text objects
@@ -56,8 +23,8 @@ Function p_CreateScore()
         FreeTextObject(1)		                                        ;free memory of no longer deeded text objects
     Next
 
-    DisplayTextObject(scoreText, 10, 4)                                 ;display "Score" text
-    DisplaySprite(scores[player.score], 70, 4)                          ;display starting score
+    DisplayTextObject(scoreLabel, 10, 4)								;display "Score" text
+    DisplaySprite(scores[player.score], scoreLabelX, 4)					;display starting score depending on text length
 EndFunction
 
 
@@ -67,7 +34,8 @@ EndFunction
 Function p_CreateCountdown()
 	p_setFontGame()
 
-    timeText = CreateTextObject(Nil, catalog$[4]..": ")					;create "Time" text
+    timeLabel = CreateTextObject(Nil, catalog$[4]		)				;create "Time" text
+	timeLabelX = 590 - GetAttribute(#TEXTOBJECT, timeLabel, #ATTRWIDTH)		;depends on language
 
     For Local i = 0 To time
         CreateTextObject(1, PadNum(time - i, 2))                        ;create timer numbers as text objects starting at 10
@@ -79,7 +47,7 @@ Function p_CreateCountdown()
         CreateTextObject(i, PadNum(time - i, 2))                        ;create timer numbers as text objects starting at 10
     Next
 
-    DisplayTextObject(timeText, 550, 4)                                 ;display "Time" text
+    DisplayTextObject(timeLabel, timeLabelX, 4)							;display "Time" text
     DisplaySprite(countdown[0], 600, 4)                                 ;display starting time
 EndFunction
 
@@ -106,6 +74,40 @@ Function p_Countdown()
 EndFunction
 
 
+/***************************
+ * Check if balloon is hit *
+ ***************************/
+Function p_Burst()
+    For Local i = balloons To 1 Step -1								;negative step so click works on balloon "on top" in case of overlapping with other
+        If balloon[i].notPopped
+            If (balloon[i]:pop())									;if balloon was hit
+                RemoveSprite(scores[player.score])					;remove old score
+                player.score = player.score + 1						;uodate score
+	            DisplaySprite(scores[player.score], scoreLabelX, 4)	;show updated score
+	            If player.score = balloons							;check if all balloons popped
+					player.time = GetTimer(1) / 1000				;get elapsed time
+					Local time$ = p_CompareTimes()					;check if time is in top 10
+		            p_GameOver(time$)								;end game
+	            EndIf
+	            Break												;balloon was popped and game continues, break loop
+            EndIf
+        EndIf
+    Next
+EndFunction
+
+
+/*****************
+ * Move balloons *
+ *****************/
+Function p_MoveBalloons()
+    BeginRefresh()
+    For Local i = 1 To balloons
+        balloon[i]:move()					;move balloon object
+    Next
+    EndRefresh()
+EndFunction
+
+
 /*************
  * Game over *
  *************/
@@ -119,8 +121,8 @@ Function p_GameOver(endText$)
     RemoveSprites(True)     ;remove sprites but keep graphics displayed so box can be draw on top
 
 	;create and open display when game is over
-	CreateDisplay(4, {Width = 610, Height = 430, Color = #GRAY, NoClose = True, Active = True, Title = ""})
-	OpenDisplay(4)
+	CreateDisplay(4, {Width = 610, Height = 430, Color = $F96773, NoClose = True, Active = True, Title = ""})
+	SelectDisplay(4)		;to be able to draw while not openned
 	EnableLayers()			;to be able to show/hide button's layers (button colored or grayed)
 
 	p_setFontGameOver()
@@ -129,6 +131,7 @@ Function p_GameOver(endText$)
 		PlaySample(6)
 	    TextOut(#CENTER, #CENTER, catalog$[13])
 	ElseIf endText$ = "high"
+		SetDisplayAttributes({Color = $56AABD})
 		PlaySample(5)
 		DisplayBrush(13, #CENTER - 25, #CENTER - 100, {AnchorX = 0.5, AnchorY = 0.5})
 		DisplayBrush(14, #CENTER - 75, #CENTER - 100, {AnchorX = 0.5, AnchorY = 0.5})
@@ -136,11 +139,14 @@ Function p_GameOver(endText$)
 		DisplayBrush(16, #CENTER + 75, #CENTER - 100, {AnchorX = 0.5, AnchorY = 0.5})
 	    TextOut(#CENTER, #CENTER - 50, catalog$[16])
     Else
+		SetDisplayAttributes({Color = $66BD56})
 		PlaySample(4)
 		DisplayBrush(15, #CENTER, #CENTER - 50, {AnchorX = 0.5, AnchorY = 0.5})
 	    TextOut(#CENTER, #CENTER, catalog$[14])
     EndIf
-
+	
+	OpenDisplay(4)
+	
     Wait(100)
     TextOut(#CENTER, 260, catalog$[15])			;ask if player wants to play again
 	
@@ -170,8 +176,8 @@ Function p_CleanUp()
 	    FreeSprite(balloon[i].sprite)		;free sprites created for balloons
     Next
 
-    FreeTextObject(scoreText)				;free text objects
-    FreeTextObject(timeText)
+    FreeTextObject(scoreLabel)				;free text objects
+    FreeTextObject(timeLabel)
 
 	DeleteButton(button6)					;delete "Yes" button
 	DeleteButton(button7)					;delete "No" button
