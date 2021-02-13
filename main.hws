@@ -1,6 +1,6 @@
 @APPTITLE "Balloons"
 @APPAUTHOR "Enrique Mecklenburg Serkovic"
-@APPVERSION "$VER: Balloons 2.0 (31-Jan-21)"
+@APPVERSION "$VER: Balloons 2.1 (13-Feb-21)"
 @APPDESCRIPTION "Scratch example written in Hollywood"
 @APPICON {Ic16x16 = "icons/icon16x16.png",
 		  Ic16x16s = "icons/icon16x16.png",
@@ -22,7 +22,7 @@
 @BGPIC 2, "backgrounds/background.png"
 @BGPIC 3, "backgrounds/scores.png"
 
-@DISPLAY 1, {BGPic = 1, Color = #GRAY, Title = "Balloons"}
+@DISPLAY 1, {BGPic = 1, Color = #GRAY, Title = "Balloons", SmoothScale = True}
 
 ;balloon sprites, each with 2 frames, one with the balloon image and one with the popped image
 @SPRITE 1, "sprites/balloon_blue.png", {Width = 54, Height= 70, Frames = 2, FPR = 2, LoadAlpha = True}
@@ -247,6 +247,7 @@ Function p_Menu()
 	button4 = MakeButton(Nil, #SIMPLEBUTTON, 575 - bwidth, 432, 40 + bwidth, 35, evttable)
 	
 	;create menu button fullscreen
+	SetFillStyle(#FILLNONE, 2)				;draw outline, not filling, with 2 pixels thickness
 	buttonScreenTag$ = CreateTextObject(Nil, "Fullscreen", {Encoding=utf8})
 	btFullScreen_tag = ConvertToBrush(#TEXTOBJECT, buttonScreenTag$, Nil)
 	FreeTextObject(buttonScreenTag$)
@@ -268,7 +269,7 @@ Function p_Play()
 	If screenMode = #DISPMODE_WINDOWED
 		CreateDisplay(2, {BGPic = 2, Active = True, Title = "Balloons", Mode = "Windowed"})
 	Else
-		CreateDisplay(2, {BGPic = 2, Active = True, Title = "Balloons", Mode = "FullScreen"})
+		CreateDisplay(2, {BGPic = 2, Active = True, Title = "Balloons", SmoothScale = True, Mode = "FullScreen"})
 	EndIf
 	OpenDisplay(2)
 
@@ -292,17 +293,18 @@ Function p_Play()
     crosshair = CreatePointer(Nil, #BRUSH, 17, #CENTER, #CENTER)
 	SetPointer(crosshair)
 
-    Box(0, 0, 640, 25, #GRAY, {Transparency = "50%"})          ;score and time area
+	SetFillStyle(#FILLCOLOR)								;draw filling with color
+    Box(0, 0, 640, 25, #GRAY, {Transparency = "50%"})		;score and time area
 
-    p_CreateScore()                                            ;set starting score
-    p_CreateCountdown()                                        ;set remaining time
+    p_CreateScore()											;set starting score
+    p_CreateCountdown()										;set remaining time
     Wait(25)
-    p_CreateBalloons()                                         ;create and show balloons
+    p_CreateBalloons()										;create and show balloons
 
-    StartTimer(1)                                              ;start timer
+    StartTimer(1)											;start timer
 	
-    SetInterval(1, p_Countdown, 1000)                          ;execute timecountdown loop, 1 second interval
-    SetInterval(2, p_MoveBalloons, 1000/25)                    ;execute main loop at 25fps
+    SetInterval(1, p_Countdown, 1000)						;execute timecountdown loop, 1 second interval
+    SetInterval(2, p_MoveBalloons, 1000/25)					;execute main loop at 25fps
 EndFunction
 
 

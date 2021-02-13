@@ -1,6 +1,6 @@
 Name:        Balloons
 Type:        Game
-Version:     2.0
+Version:     2.1
 Author:      Enrique Mecklenburg Serkovic
 email:       enrique_mecklenburg@yahoo.com
 
@@ -35,7 +35,6 @@ INSTALLATION
 
 TO DO
 -----
- - Changing fullscreen/window mode from the start menu
  - SDL version (some day)
  - Vector graphics (two more weeks?)
 

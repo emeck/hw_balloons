@@ -121,7 +121,7 @@ Function p_GameOver(endText$)
     RemoveSprites(True)     ;remove sprites but keep graphics displayed so box can be draw on top
 
 	;create and open display when game is over
-	CreateDisplay(4, {Width = 610, Height = 430, Color = $F96773, NoClose = True, Active = True, Title = ""})
+	CreateDisplay(4, {Width = 610, Height = 430, Color = $F96773, NoClose = True, Active = True, Title = "", SmoothScale = True, NoHide = True})
 	SelectDisplay(4)		;to be able to draw while not openned
 	EnableLayers()			;to be able to show/hide button's layers (button colored or grayed)
 
