@@ -56,7 +56,7 @@ EndFunction
  * Check time countdown *
  ************************/
 Function p_Countdown()
-    ;remember that time sprites run from 10 to 0
+    ;remember that time sprites run backwards to 0
     Local t = Int(GetTimer(1) / 1000)       ;get next second
 
     ;when resuming after a pause, the display is redrawn and the time sprite is not in sync with the timer

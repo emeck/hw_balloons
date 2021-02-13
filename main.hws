@@ -48,6 +48,7 @@
 @BRUSH 15, "brushes/medal3.png", {LoadAlpha = True}
 @BRUSH 16, "brushes/medal4.png", {LoadAlpha = True}
 @BRUSH 17, "brushes/pointer.png", {LoadAlpha = True}
+@BRUSH 18, "brushes/check.png", {LoadAlpha = True}
 
 ;game samples
 @SAMPLE 1, "sounds/intro.wav"
@@ -66,8 +67,7 @@
 
 EscapeQuit(True)
 
-SetFillStyle(#FILLCOLOR)
-
+screenMode = #DISPMODE_WINDOWED
 
 player = {name = "", score = 0, time = 0, date = ""}	;player's data
 balloons = 15											;total ballons on screen
@@ -179,6 +179,15 @@ Function p_Buttons(msg)
 			PlaySample(2)
 			p_CleanUp()
 			OpenDisplay(1)
+		ElseIf msg.id = buttonScreen
+			If screenMode = #dispmode_fullscreen
+				HideLayer("check")
+				screenMode = #DISPMODE_WINDOWED
+			Else
+				ShowLayer("check")
+				screenMode = #DISPMODE_FULLSCREEN
+			EndIf
+			ChangeDisplayMode(screenMode)
 		EndIf
 	EndSwitch
 EndFunction
@@ -236,6 +245,17 @@ Function p_Menu()
 	bwidth = GetAttribute(#BRUSH, bt4_tag, #ATTRWIDTH)
 	DisplayBrush(bt4_tag, 575 - bwidth, 432)
 	button4 = MakeButton(Nil, #SIMPLEBUTTON, 575 - bwidth, 432, 40 + bwidth, 35, evttable)
+	
+	;create menu button fullscreen
+	buttonScreenTag$ = CreateTextObject(Nil, "Fullscreen", {Encoding=utf8})
+	btFullScreen_tag = ConvertToBrush(#TEXTOBJECT, buttonScreenTag$, Nil)
+	FreeTextObject(buttonScreenTag$)
+	Box(30, 30, 30, 30, #BLACK)
+	DisplayBrush(btFullScreen_tag, 70, 30)
+	DisplayBrush(18, 30, 25)
+	SetLayerName(0, "check")
+	HideLayer("check")
+	buttonScreen = MakeButton(Nil, #SIMPLEBUTTON, 30, 30, 30, 30, evttable)
 EndFunction
 
 
@@ -245,8 +265,13 @@ EndFunction
 Function p_Play()
 	menuOn = False
 	;create and open game display
-	CreateDisplay(2, {BGPic = 2, Active = True, Title = "Balloons"})
+	If screenMode = #DISPMODE_WINDOWED
+		CreateDisplay(2, {BGPic = 2, Active = True, Title = "Balloons", Mode = "Windowed"})
+	Else
+		CreateDisplay(2, {BGPic = 2, Active = True, Title = "Balloons", Mode = "FullScreen"})
+	EndIf
 	OpenDisplay(2)
+
 	DisableLayers()						;game display uses sprites so no layers
 	
     done = False						;game is not over
