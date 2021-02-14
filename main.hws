@@ -22,7 +22,7 @@
 @BGPIC 2, "backgrounds/background.png"
 @BGPIC 3, "backgrounds/scores.png"
 
-@DISPLAY 1, {BGPic = 1, Color = #GRAY, Title = "Balloons", SmoothScale = True}
+@DISPLAY 1, {BGPic = 1, Color = #GRAY, Title = "Balloons", SmoothScale = True, Mode = "Fullscreen"}
 
 ;balloon sprites, each with 2 frames, one with the balloon image and one with the popped image
 @SPRITE 1, "sprites/balloon_blue.png", {Width = 54, Height= 70, Frames = 2, FPR = 2, LoadAlpha = True}
