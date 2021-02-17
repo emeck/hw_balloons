@@ -67,7 +67,7 @@
 
 EscapeQuit(True)
 
-screenMode = #DISPMODE_WINDOWED
+;screenMode = #DISPMODE_WINDOWED
 
 player = {name = "", score = 0, time = 0, date = ""}	;player's data
 balloons = 15											;total ballons on screen
