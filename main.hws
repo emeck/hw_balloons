@@ -246,7 +246,7 @@ Function p_Menu()
 	DisplayBrush(bt4_tag, 575 - bwidth, 432)
 	button4 = MakeButton(Nil, #SIMPLEBUTTON, 575 - bwidth, 432, 40 + bwidth, 35, evttable)
 	
-	;create menu button fullscreen
+/*	;create menu button fullscreen
 	SetFillStyle(#FILLNONE, 2)				;draw outline, not filling, with 2 pixels thickness
 	buttonScreenTag$ = CreateTextObject(Nil, "Fullscreen", {Encoding=utf8})
 	btFullScreen_tag = ConvertToBrush(#TEXTOBJECT, buttonScreenTag$, Nil)
@@ -256,7 +256,7 @@ Function p_Menu()
 	DisplayBrush(18, 30, 25)
 	SetLayerName(0, "check")
 	HideLayer("check")
-	buttonScreen = MakeButton(Nil, #SIMPLEBUTTON, 30, 30, 30, 30, evttable)
+	buttonScreen = MakeButton(Nil, #SIMPLEBUTTON, 30, 30, 30, 30, evttable)*/
 EndFunction
 
 
